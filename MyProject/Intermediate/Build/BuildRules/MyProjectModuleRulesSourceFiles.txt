@@ -1,3 +1,0 @@
-C:\Users\Jonathan\Desktop\Unbelievable\MyProject\Source\MyProject\MyProject.Build.cs
-C:\Users\Jonathan\Desktop\Unbelievable\MyProject\Source\MyProject.Target.cs
-C:\Users\Jonathan\Desktop\Unbelievable\MyProject\Source\MyProjectEditor.Target.cs
