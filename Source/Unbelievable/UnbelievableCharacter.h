@@ -31,6 +31,7 @@ public:
 	float WallJumpTraceDistance;
 
 	void Jump();
+	void StopJumping();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalljumpHorizontalStrenght;

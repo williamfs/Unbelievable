@@ -66,6 +66,10 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 {
 	DoubleJumpCounter = 0;
+}
+
+void AUnbelievableCharacter::StopJumping()
+{
 	id = this;
 }
 
