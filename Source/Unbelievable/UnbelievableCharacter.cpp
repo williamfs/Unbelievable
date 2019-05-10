@@ -66,11 +66,12 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 {
 	DoubleJumpCounter = 0;
+	id = this;
 }
 
 void AUnbelievableCharacter::StopJumping()
 {
-	id = this;
+	//id = this;
 }
 
 //Resets dodge after cooldown timer
