@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "../../../../../../Program Files/Epic Games/UE_4.21/Engine/Plugins/Experimental/AlembicImporter/Source/ThirdParty/Alembic/AlembicDeploy/include/ImathFun.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -30,6 +31,9 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WallJumpTraceDistance = 200;
 
 	id = this;
+
+	FirstPersonCameraComponent->bUsePawnControlRotation = false;
+	bUseControllerRotationRoll = true;
 }
 
 void AUnbelievableCharacter::BeginPlay()
@@ -43,11 +47,12 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	//Sets key binds for jump
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AUnbelievableCharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	//Sets key binds for movement
 	PlayerInputComponent->BindAxis("MoveForward", this, &AUnbelievableCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AUnbelievableCharacter::MoveRight);
+	PlayerInputComponent->BindAction("WallRun", IE_Pressed, this, &AUnbelievableCharacter::WallRun);
+	PlayerInputComponent->BindAction("WallRun", IE_Released, this, &AUnbelievableCharacter::WallRunEnd);
 
 	//Sets key binds for camera movement
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
@@ -69,11 +74,6 @@ void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 	id = this;
 }
 
-void AUnbelievableCharacter::StopJumping()
-{
-	//id = this;
-}
-
 //Resets dodge after cooldown timer
 void AUnbelievableCharacter::DodgeCooldown()
 {
@@ -93,8 +93,67 @@ void AUnbelievableCharacter::DoubleJump()
 //Movement for forward and backwards
 void AUnbelievableCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (CanWallRun == true && Value != 0.0f && !GetCharacterMovement()->IsMovingOnGround())
 	{
+		// Do a ring of traces
+		FVector TraceStart = GetActorLocation();
+		FVector Front = GetActorRotation().Vector();
+		FVector Side = FVector::CrossProduct(Front, FVector::UpVector);
+		float traceDistance = 100;
+		float MinDistance = 9999999;
+		FVector HitLocation = FVector::ZeroVector;
+
+		for (int i = 0; i < WallJumpTraces; i++)
+		{
+			//Basically a ray cast that finds if the player hits a wall then creates a direction for the player to jump
+			float TraceAngle = 360 / WallJumpTraces * i;
+			FVector TraceDir = Front * FMath::Sin(TraceAngle) + Side * FMath::Cos(TraceAngle);
+			FVector TraceEnd = TraceStart + TraceDir * traceDistance;
+			static FName TraceTag = FName(TEXT("WeaponTrace"));
+			FCollisionQueryParams TraceParams(TraceTag, true, Instigator);
+			TraceParams.bTraceAsyncScene = true;
+			TraceParams.bReturnPhysicalMaterial = true;
+			FHitResult Hit(ForceInit);
+
+			//Checks if the player hits a wall
+			if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_EngineTraceChannel2, TraceParams))
+			{
+				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
+				if ((Hit.Location - TraceStart).Size() < MinDistance)
+				{
+					HitLocation = Hit.Location;
+					MinDistance = (Hit.Location - TraceStart).Size();
+					GetCharacterMovement()->GravityScale = 0;
+					GetCharacterMovement()->Velocity.Z = 0;
+
+					/*if (HitLocation.Y > this->GetActorLocation().Y)
+						FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));*/
+				}
+				else
+				{
+					StopSideMovement = true;
+					HitLocation = FVector::ZeroVector;
+					MinDistance = 9999999;
+					GetCharacterMovement()->GravityScale = 1;
+				}
+			}
+		}
+		//Checks if the player should WallRun
+		if (HitLocation != FVector::ZeroVector)
+		{
+			//FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));
+			AddMovementInput(GetActorForwardVector(), Value);
+		}
+		else
+		{ 
+			GetCharacterMovement()->GravityScale = 1;
+		}
+	}
+	else if (Value != 0.0f)
+	{
+		FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.05f));
+		StopSideMovement = false;
+		GetCharacterMovement()->GravityScale = 1;
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
@@ -102,10 +161,20 @@ void AUnbelievableCharacter::MoveForward(float Value)
 //Movement for right and left
 void AUnbelievableCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !StopSideMovement)
 	{
 		AddMovementInput(GetActorRightVector(), Value);
 	}
+}
+
+void AUnbelievableCharacter::WallRun()
+{
+	CanWallRun = true;
+}
+
+void AUnbelievableCharacter::WallRunEnd()
+{
+	CanWallRun = false;
 }
 
 //Movement for turning side to side

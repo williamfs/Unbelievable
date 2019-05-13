@@ -31,7 +31,6 @@ public:
 	float WallJumpTraceDistance;
 
 	void Jump();
-	void StopJumping();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalljumpHorizontalStrenght;
@@ -53,10 +52,18 @@ public:
 	void DoubleJump();
 	UPROPERTY()
 	int DoubleJumpCounter;
+	UFUNCTION()
+	void WallRun();
+	UFUNCTION()
+	void WallRunEnd();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpHeight;
 
 	bool CanDodge = true;
+
+	bool CanWallRun = false;
+	bool StopSideMovement = false;
 
 protected:
 
