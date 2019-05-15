@@ -21,11 +21,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = Location)
-		FVector SpawnLocation;
+	/*UPROPERTY(EditAnywhere, Category = Location)
+		FVector SpawnLocation;*/
+	float XFloat = 0;
+	float YFloat = 0;
+	float ZFloat = 0;
+
+	UPROPERTY(EditAnywhere, Category = Rotation)
+		FRotator SpawnRotation;
 
 	void Respawn();
 
-	UFUNCTION(BlueprintCallable, Category = "category")
+	//UFUNCTION(BlueprintCallable, Category = "category")
 		void SetSpawnLocation();
 };

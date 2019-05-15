@@ -28,7 +28,7 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WallJumpTraces = 20;
 	WalljumpHorizontalStrenght = 1200;
 	WalljumpUpwardsStrength = 1500;
-	WallJumpTraceDistance = 200;
+	WallJumpTraceDistance = 100;
 
 	id = this;
 
@@ -133,10 +133,12 @@ void AUnbelievableCharacter::MoveForward(float Value)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
-					GetCharacterMovement()->Velocity.Z = 0;
-
-					/*if (HitLocation.Y > this->GetActorLocation().Y)
-						FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));*/
+					GetCharacterMovement()->Velocity.Z = -50;
+/*
+					if (TraceEnd.Y < TraceDir.Y)
+						FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));
+					else if (TraceEnd.Y > TraceDir.Y)
+						FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, -22.5f).Clamp(), 0.05f));*/
 				}
 				else
 				{
@@ -253,6 +255,9 @@ void AUnbelievableCharacter::EndDodge()
 	GetCharacterMovement()->GroundFriction = 1;
 }
 
+////
+//Start: Debug to test air control
+////
 void AUnbelievableCharacter::SingleJumpIncrement()
 {
 	if (SingleJumpControl < 1)
@@ -280,6 +285,9 @@ void AUnbelievableCharacter::DoubleJumpIncrement()
 		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Control Set To Zero"));
 	}
 }
+////
+//End: Debug to test air control
+////
 
 //Controls if the player should jump or wall jump
 void AUnbelievableCharacter::Jump()
@@ -325,10 +333,12 @@ void AUnbelievableCharacter::Jump()
 		//Checks if the player should jump from the wall and launches them
 		if (HitLocation != FVector::ZeroVector)
 		{
+
+			CanWallRun = false;
+
 			GetCharacterMovement()->AirControl = DoubleJumpControl;
 
-			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2,
-			                false, true);
+			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
 		}
 		else
 		{

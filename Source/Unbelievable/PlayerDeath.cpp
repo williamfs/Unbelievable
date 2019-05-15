@@ -5,6 +5,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "UObjectIterator.h"
 #include "Engine/Engine.h"
+#include "UnbelievableCharacter.h"
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 APlayerDeath::APlayerDeath()
@@ -49,6 +53,7 @@ void APlayerDeath::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		if (OtherActor->GetName() == "FirstPersonCharacter2")
 		{
 			//Calls function from ASpawnLocation script
+			((AUnbelievableCharacter*)OtherActor)->GetCharacterMovement()->StopMovementImmediately();
 			((ASpawnLocation*)OtherActor)->Respawn();
 		}
 	}
