@@ -29,6 +29,11 @@ public:
 
 	int WallJumpTraces;
 	float WallJumpTraceDistance;
+	float SingleJumpControl;
+	float DoubleJumpControl;
+
+	void SingleJumpIncrement();
+	void DoubleJumpIncrement();
 
 	void Jump();
 

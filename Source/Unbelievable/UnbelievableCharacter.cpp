@@ -32,8 +32,8 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 
 	id = this;
 
-	FirstPersonCameraComponent->bUsePawnControlRotation = false;
-	bUseControllerRotationRoll = true;
+	//FirstPersonCameraComponent->bUsePawnControlRotation = false;
+	//bUseControllerRotationRoll = true;
 }
 
 void AUnbelievableCharacter::BeginPlay()
@@ -48,6 +48,9 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	//Sets key binds for jump
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AUnbelievableCharacter::Jump);
 
+	PlayerInputComponent->BindAction("IncSControl", IE_Pressed, this, &AUnbelievableCharacter::SingleJumpIncrement);
+	PlayerInputComponent->BindAction("IncDControl", IE_Pressed, this, &AUnbelievableCharacter::DoubleJumpIncrement);
+
 	//Sets key binds for movement
 	PlayerInputComponent->BindAxis("MoveForward", this, &AUnbelievableCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AUnbelievableCharacter::MoveRight);
@@ -58,7 +61,7 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AUnbelievableCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AUnbelievableCharacter::LookUpAtRate);
+	PlayerInputComponent->BindAxis("LookUp", this, &AUnbelievableCharacter::LookUpAtRate);
 
 	//Sets key binds for dodge
 	PlayerInputComponent->BindAction("DodgeLeft", IE_Pressed, this, &AUnbelievableCharacter::DodgeLeft);
@@ -83,8 +86,15 @@ void AUnbelievableCharacter::DodgeCooldown()
 //Jump functionality, launches player into air and can be pressed twice and is reset when touching the ground
 void AUnbelievableCharacter::DoubleJump()
 {
-	if (DoubleJumpCounter <= 1)
+	if (DoubleJumpCounter == 0)
 	{
+		GetCharacterMovement()->AirControl = SingleJumpControl;
+		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
+		DoubleJumpCounter++;
+	}
+	else if (DoubleJumpCounter == 1)
+	{
+		GetCharacterMovement()->AirControl = DoubleJumpControl;
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		DoubleJumpCounter++;
 	}
@@ -123,7 +133,6 @@ void AUnbelievableCharacter::MoveForward(float Value)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
-					GetCharacterMovement()->GravityScale = 0;
 					GetCharacterMovement()->Velocity.Z = 0;
 
 					/*if (HitLocation.Y > this->GetActorLocation().Y)
@@ -134,7 +143,6 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					StopSideMovement = true;
 					HitLocation = FVector::ZeroVector;
 					MinDistance = 9999999;
-					GetCharacterMovement()->GravityScale = 1;
 				}
 			}
 		}
@@ -142,18 +150,20 @@ void AUnbelievableCharacter::MoveForward(float Value)
 		if (HitLocation != FVector::ZeroVector)
 		{
 			//FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));
+			//FirstPersonCameraComponent->bUsePawnControlRotation = false;
+			//bUseControllerRotationRoll = true;
 			AddMovementInput(GetActorForwardVector(), Value);
 		}
 		else
 		{ 
-			GetCharacterMovement()->GravityScale = 1;
+			//FirstPersonCameraComponent->bUsePawnControlRotation = true;
+			//bUseControllerRotationRoll = false;
 		}
 	}
 	else if (Value != 0.0f)
 	{
-		FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.05f));
+		//FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.05f));
 		StopSideMovement = false;
-		GetCharacterMovement()->GravityScale = 1;
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
@@ -202,7 +212,7 @@ void AUnbelievableCharacter::DodgeLeft()
 
 		//Finds left directiong of the player camera
 		const FVector ForwardDir = FirstPersonCameraComponent->GetRightVector();
-		const FVector AddForce = -(ForwardDir * 1000) + FVector(0, 0, 10) * 10;
+		const FVector AddForce = -(ForwardDir * 750) + FVector(0, 0, 10) * 10;
 
 		//Launches the player in the direction just found
 		ACharacter::LaunchCharacter(AddForce, false, true);
@@ -226,7 +236,7 @@ void AUnbelievableCharacter::DodgeRight()
 
 		//Finds right directiong of the player camera
 		const FVector ForwardDir = FirstPersonCameraComponent->GetRightVector();
-		const FVector AddForce = (ForwardDir * 1000) + FVector(0, 0, 10) * 10;
+		const FVector AddForce = (ForwardDir * 750) + FVector(0, 0, 10) * 10;
 
 		//Launches the player in the direction just found
 		ACharacter::LaunchCharacter(AddForce, false, true);
@@ -241,6 +251,34 @@ void AUnbelievableCharacter::DodgeRight()
 void AUnbelievableCharacter::EndDodge()
 {
 	GetCharacterMovement()->GroundFriction = 1;
+}
+
+void AUnbelievableCharacter::SingleJumpIncrement()
+{
+	if (SingleJumpControl < 1)
+	{
+		SingleJumpControl += 0.1f;
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Single Jump Increase Control"));
+	}
+	else
+	{
+		SingleJumpControl = 0;
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Single Jump Control Set To Zero"));
+	}
+}
+
+void AUnbelievableCharacter::DoubleJumpIncrement()
+{
+	if (DoubleJumpControl < 1)
+	{
+		DoubleJumpControl += 0.1f;
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Increase Control"));
+	}
+	else
+	{
+		DoubleJumpControl = 0;
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Control Set To Zero"));
+	}
 }
 
 //Controls if the player should jump or wall jump
@@ -287,6 +325,8 @@ void AUnbelievableCharacter::Jump()
 		//Checks if the player should jump from the wall and launches them
 		if (HitLocation != FVector::ZeroVector)
 		{
+			GetCharacterMovement()->AirControl = DoubleJumpControl;
+
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2,
 			                false, true);
 		}
