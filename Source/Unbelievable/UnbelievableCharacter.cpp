@@ -8,7 +8,6 @@
 #include "../../../../../../Program Files/Epic Games/UE_4.21/Engine/Plugins/Experimental/AlembicImporter/Source/ThirdParty/Alembic/AlembicDeploy/include/ImathFun.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
-
 AUnbelievableCharacter::AUnbelievableCharacter()
 {
 	//Sets up Collision
@@ -31,16 +30,27 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WallJumpTraceDistance = 100;
 
 	id = this;
-
-	//FirstPersonCameraComponent->bUsePawnControlRotation = false;
-	//bUseControllerRotationRoll = true;
 }
 
+//Called on start
 void AUnbelievableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
+//Updates every frame
+void AUnbelievableCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (isheld == true)
+		CanWallRun = true;
+	else
+		CanWallRun = false;
+
+}
+
+//Initialize keyboard inputs
 void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
@@ -48,8 +58,8 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	//Sets key binds for jump
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AUnbelievableCharacter::Jump);
 
-	PlayerInputComponent->BindAction("IncSControl", IE_Pressed, this, &AUnbelievableCharacter::SingleJumpIncrement);
-	PlayerInputComponent->BindAction("IncDControl", IE_Pressed, this, &AUnbelievableCharacter::DoubleJumpIncrement);
+	//PlayerInputComponent->BindAction("IncSControl", IE_Pressed, this, &AUnbelievableCharacter::SingleJumpIncrement);
+	//PlayerInputComponent->BindAction("IncDControl", IE_Pressed, this, &AUnbelievableCharacter::DoubleJumpIncrement);
 
 	//Sets key binds for movement
 	PlayerInputComponent->BindAxis("MoveForward", this, &AUnbelievableCharacter::MoveForward);
@@ -70,36 +80,8 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("DodgeRight", IE_Released, this, &AUnbelievableCharacter::EndDodge);
 }
 
-//Detects when the players touches the ground
-void AUnbelievableCharacter::Landed(const FHitResult& Hit)
-{
-	DoubleJumpCounter = 0;
-	id = this;
-}
-
-//Resets dodge after cooldown timer
-void AUnbelievableCharacter::DodgeCooldown()
-{
-	CanDodge = true;
-}
-
-//Jump functionality, launches player into air and can be pressed twice and is reset when touching the ground
-void AUnbelievableCharacter::DoubleJump()
-{
-	if (DoubleJumpCounter == 0)
-	{
-		GetCharacterMovement()->AirControl = SingleJumpControl;
-		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
-		DoubleJumpCounter++;
-	}
-	else if (DoubleJumpCounter == 1)
-	{
-		GetCharacterMovement()->AirControl = DoubleJumpControl;
-		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
-		DoubleJumpCounter++;
-	}
-}
-
+//Core movement functions including camera 
+#pragma region CoreMovement
 //Movement for forward and backwards
 void AUnbelievableCharacter::MoveForward(float Value)
 {
@@ -107,38 +89,51 @@ void AUnbelievableCharacter::MoveForward(float Value)
 	{
 		// Do a ring of traces
 		FVector TraceStart = GetActorLocation();
-		FVector Front = GetActorRotation().Vector();
-		FVector Side = FVector::CrossProduct(Front, FVector::UpVector);
 		float traceDistance = 100;
 		float MinDistance = 9999999;
 		FVector HitLocation = FVector::ZeroVector;
-
+		FVector TraceRight = GetActorRightVector();
+		FVector RightEnd = TraceStart + TraceRight * traceDistance;
+		FVector TraceLeft = -GetActorRightVector();
+		FVector LeftEnd = TraceStart + TraceLeft * traceDistance;
+		static FName TraceTag = FName(TEXT("WeaponTrace"));
+		FCollisionQueryParams TraceParams(TraceTag, true, Instigator);
+		TraceParams.bTraceAsyncScene = true;
+		TraceParams.bReturnPhysicalMaterial = true;
+		FHitResult Hit(ForceInit);
 		for (int i = 0; i < WallJumpTraces; i++)
 		{
-			//Basically a ray cast that finds if the player hits a wall then creates a direction for the player to jump
-			float TraceAngle = 360 / WallJumpTraces * i;
-			FVector TraceDir = Front * FMath::Sin(TraceAngle) + Side * FMath::Cos(TraceAngle);
-			FVector TraceEnd = TraceStart + TraceDir * traceDistance;
-			static FName TraceTag = FName(TEXT("WeaponTrace"));
-			FCollisionQueryParams TraceParams(TraceTag, true, Instigator);
-			TraceParams.bTraceAsyncScene = true;
-			TraceParams.bReturnPhysicalMaterial = true;
-			FHitResult Hit(ForceInit);
-
 			//Checks if the player hits a wall
-			if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_EngineTraceChannel2, TraceParams))
+			if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, RightEnd, ECC_EngineTraceChannel2, TraceParams))
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
-					GetCharacterMovement()->Velocity.Z = -50;
-/*
-					if (TraceEnd.Y < TraceDir.Y)
-						FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));
-					else if (TraceEnd.Y > TraceDir.Y)
-						FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, -22.5f).Clamp(), 0.05f));*/
+					GetCharacterMovement()->Velocity.Z = -75;
+					FirstPersonCameraComponent->bUsePawnControlRotation = false;
+					bUseControllerRotationRoll = true;
+					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, -22.5f).Clamp(), 0.01f));
+				}
+				else
+				{
+					StopSideMovement = true;
+					HitLocation = FVector::ZeroVector;
+					MinDistance = 9999999;
+				}
+			}
+			else if(GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, LeftEnd, ECC_EngineTraceChannel2, TraceParams))
+			{
+				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
+				if ((Hit.Location - TraceStart).Size() < MinDistance)
+				{
+					HitLocation = Hit.Location;
+					MinDistance = (Hit.Location - TraceStart).Size();
+					GetCharacterMovement()->Velocity.Z = -75;
+					FirstPersonCameraComponent->bUsePawnControlRotation = false;
+					bUseControllerRotationRoll = true;
+					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.01f));
 				}
 				else
 				{
@@ -151,20 +146,17 @@ void AUnbelievableCharacter::MoveForward(float Value)
 		//Checks if the player should WallRun
 		if (HitLocation != FVector::ZeroVector)
 		{
-			//FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.05f));
-			//FirstPersonCameraComponent->bUsePawnControlRotation = false;
-			//bUseControllerRotationRoll = true;
 			AddMovementInput(GetActorForwardVector(), Value);
-		}
-		else
-		{ 
-			//FirstPersonCameraComponent->bUsePawnControlRotation = true;
-			//bUseControllerRotationRoll = false;
 		}
 	}
 	else if (Value != 0.0f)
 	{
-		//FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.05f));
+		if (bUseControllerRotationRoll)
+		{
+			FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.5f));
+			FirstPersonCameraComponent->bUsePawnControlRotation = true;
+			bUseControllerRotationRoll = false;
+		}
 		StopSideMovement = false;
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
@@ -181,12 +173,12 @@ void AUnbelievableCharacter::MoveRight(float Value)
 
 void AUnbelievableCharacter::WallRun()
 {
-	CanWallRun = true;
+	isheld = true;
 }
 
 void AUnbelievableCharacter::WallRunEnd()
 {
-	CanWallRun = false;
+	isheld = false;
 }
 
 //Movement for turning side to side
@@ -200,7 +192,10 @@ void AUnbelievableCharacter::LookUpAtRate(float Rate)
 {
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
+#pragma endregion CoreMovement
 
+//Functions that control dodge mechanics
+#pragma region Dodge
 //Launches the player left
 void AUnbelievableCharacter::DodgeLeft()
 {
@@ -220,8 +215,7 @@ void AUnbelievableCharacter::DodgeLeft()
 		ACharacter::LaunchCharacter(AddForce, false, true);
 
 		//Starts the cooldown timer for the dodge
-		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::DodgeCooldown, 1.0f, false,
-		                                1.0f);
+		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::DodgeCooldown, 1.0f, false, 1.0f);
 	}
 }
 
@@ -244,8 +238,7 @@ void AUnbelievableCharacter::DodgeRight()
 		ACharacter::LaunchCharacter(AddForce, false, true);
 
 		//Starts the cooldown timer for the dodge
-		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::DodgeCooldown, 1.0f, false,
-		                                1.0f);
+		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::DodgeCooldown, 1.0f, false, 1.0f);
 	}
 }
 
@@ -255,40 +248,15 @@ void AUnbelievableCharacter::EndDodge()
 	GetCharacterMovement()->GroundFriction = 1;
 }
 
-////
-//Start: Debug to test air control
-////
-void AUnbelievableCharacter::SingleJumpIncrement()
+//Resets dodge after cooldown timer
+void AUnbelievableCharacter::DodgeCooldown()
 {
-	if (SingleJumpControl < 1)
-	{
-		SingleJumpControl += 0.1f;
-		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Single Jump Increase Control"));
-	}
-	else
-	{
-		SingleJumpControl = 0;
-		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Single Jump Control Set To Zero"));
-	}
+	CanDodge = true;
 }
+#pragma endregion Dodge
 
-void AUnbelievableCharacter::DoubleJumpIncrement()
-{
-	if (DoubleJumpControl < 1)
-	{
-		DoubleJumpControl += 0.1f;
-		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Increase Control"));
-	}
-	else
-	{
-		DoubleJumpControl = 0;
-		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Control Set To Zero"));
-	}
-}
-////
-//End: Debug to test air control
-////
-
+//Functions that control jump, double jump, and wall jump
+#pragma region Jump
 //Controls if the player should jump or wall jump
 void AUnbelievableCharacter::Jump()
 {
@@ -298,7 +266,6 @@ void AUnbelievableCharacter::Jump()
 		FVector TraceStart = GetActorLocation();
 		FVector Front = GetActorRotation().Vector();
 		FVector Side = FVector::CrossProduct(Front, FVector::UpVector);
-
 		float MinDistance = 9999999;
 		FVector HitLocation = FVector::ZeroVector;
 		FVector HitNormal;
@@ -333,11 +300,9 @@ void AUnbelievableCharacter::Jump()
 		//Checks if the player should jump from the wall and launches them
 		if (HitLocation != FVector::ZeroVector)
 		{
-
-			CanWallRun = false;
+			isheld = false;
 
 			GetCharacterMovement()->AirControl = DoubleJumpControl;
-
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
 		}
 		else
@@ -350,3 +315,58 @@ void AUnbelievableCharacter::Jump()
 		DoubleJump();
 	}
 }
+
+//Jump functionality, launches player into air and can be pressed twice and is reset when touching the ground
+void AUnbelievableCharacter::DoubleJump()
+{
+	if (DoubleJumpCounter == 0)
+	{
+		GetCharacterMovement()->AirControl = SingleJumpControl;
+		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
+		DoubleJumpCounter++;
+	}
+	else if (DoubleJumpCounter == 1)
+	{
+		GetCharacterMovement()->AirControl = DoubleJumpControl;
+		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
+		DoubleJumpCounter++;
+	}
+}
+
+//Detects when the players touches the ground
+void AUnbelievableCharacter::Landed(const FHitResult& Hit)
+{
+	DoubleJumpCounter = 0;
+	id = this;
+}
+#pragma endregion Jump
+
+//Debug functions to be removed after testing
+#pragma region Debug
+//void AUnbelievableCharacter::SingleJumpIncrement()
+//{
+//	if (SingleJumpControl < 1)
+//	{
+//		SingleJumpControl += 0.1f;
+//		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Single Jump Increase Control"));
+//	}
+//	else
+//	{
+//		SingleJumpControl = 0;
+//		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Single Jump Control Set To Zero"));
+//	}
+//}
+//void AUnbelievableCharacter::DoubleJumpIncrement()
+//{
+//	if (DoubleJumpControl < 1)
+//	{
+//		DoubleJumpControl += 0.1f;
+//		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Increase Control"));
+//	}
+//	else
+//	{
+//		DoubleJumpControl = 0;
+//		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Double Jump Control Set To Zero"));
+//	}
+//}
+#pragma endregion Debug

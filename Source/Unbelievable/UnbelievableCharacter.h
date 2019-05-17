@@ -29,11 +29,11 @@ public:
 
 	int WallJumpTraces;
 	float WallJumpTraceDistance;
-	float SingleJumpControl;
-	float DoubleJumpControl;
+	float SingleJumpControl = 0.5f;
+	float DoubleJumpControl = 0.3f;
 
-	void SingleJumpIncrement();
-	void DoubleJumpIncrement();
+	//void SingleJumpIncrement();
+	//void DoubleJumpIncrement();
 
 	void Jump();
 
@@ -47,6 +47,9 @@ protected:
 	void BeginPlay() override;
 
 public:
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseTurnRate;
@@ -88,6 +91,8 @@ protected:
 	void Landed(const FHitResult& Hit) override;
 
 public:
+
+	bool isheld = false;
 
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
