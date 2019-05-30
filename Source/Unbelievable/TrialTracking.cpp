@@ -3,13 +3,33 @@
 #include "TrialTracking.h"
 #include "Engine/Engine.h"
 #include "CoreMinimal.h"
+#include "PlayerDeath.h"
+#include "SpawnLocation.h"
+#include "DrawDebugHelpers.h"
+#include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "UObjectIterator.h"
+#include "UnbelievableCharacter.h"
 #include "GameFramework/PlayerController.h"
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 // Sets default values
 ATrialTracking::ATrialTracking()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Creates the Trigger area for collision
+	SphereRadius = 200.f;
+	MyCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("My Sphere Component"));
+	MyCollisionSphere->InitSphereRadius(SphereRadius);
+	MyCollisionSphere->SetCollisionProfileName("Trigger");
+	RootComponent = MyCollisionSphere;
+	MyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MY MESH"));
+	MyMesh->SetupAttachment(RootComponent);
+
+	//Creates the Collision Detection dynamic
+	MyCollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ATrialTracking::OnOverLapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -22,6 +42,7 @@ void ATrialTracking::BeginPlay()
 
 void ATrialTracking::UpdateXposition(FVector projectileLocation, FVector playerposition)
 {
+	DrawDebugSphere(GetWorld(), GetActorLocation(), SphereRadius, 20, FColor::Purple, false, -1, 0, 1);
 	//UE_LOG(LogTemp, Warning, TEXT("UpdateXposition is runnng"));
 	//UE_LOG(LogTemp, Warning, TEXT("projectileLocation is %f"),projectileLocation.X);
 	//UE_LOG(LogTemp, Warning, TEXT("playerposition is %f"), playerposition.X);
@@ -104,5 +125,21 @@ void ATrialTracking::Tick(float DeltaTime)
 	UpdateYPosition(projectileLocation, playerposition);
 	//UpdateZPosition(projectileLocation, playerposition);
 
+}
+
+//Detects collision and runs code when it collides
+void ATrialTracking::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && OtherComp != nullptr)
+	{
+		if (OtherActor->GetName() == "FirstPersonCharacter2")
+		{
+			//Calls function from ASpawnLocation script
+			((AUnbelievableCharacter*)OtherActor)->GetCharacterMovement()->StopMovementImmediately();
+			((ASpawnLocation*)OtherActor)->Respawn();
+			Destroy();
+		}
+	}
 }
 
