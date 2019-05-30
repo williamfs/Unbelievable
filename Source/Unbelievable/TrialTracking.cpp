@@ -20,7 +20,6 @@ ATrialTracking::ATrialTracking()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//Creates the Trigger area for collision
-	SphereRadius = 200.f;
 	MyCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("My Sphere Component"));
 	MyCollisionSphere->InitSphereRadius(SphereRadius);
 	MyCollisionSphere->SetCollisionProfileName("Trigger");

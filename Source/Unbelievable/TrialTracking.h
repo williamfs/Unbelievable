@@ -32,7 +32,8 @@ public:
 		class USphereComponent* MyCollisionSphere;
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* MyMesh;
-	float SphereRadius;
+	UPROPERTY(EditAnywhere)
+		float SphereRadius;
 
 	UFUNCTION()
 		void OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
