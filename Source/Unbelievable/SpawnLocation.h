@@ -27,8 +27,8 @@ public:
 	float YFloat = 0;
 	float ZFloat = 0;
 
-	UPROPERTY(EditAnywhere, Category = Rotation)
-		FRotator SpawnRotation;
+	//UPROPERTY(EditAnywhere, Category = Rotation)
+	//	FRotator SpawnRotation;
 
 	void Respawn();
 

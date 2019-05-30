@@ -8,11 +8,11 @@
 // Sets default values
 ASpawnLocation::ASpawnLocation()
 {
-	SpawnRotation = FRotator::ZeroRotator;
+	//SpawnRotation = FRotator::ZeroRotator;
 
 	ZFloat = GetActorLocation().Z;
 
-	const int C = 2;
+	//const int C = 2;
 }
 
 // Called when the game starts or when spawned
@@ -33,13 +33,13 @@ void ASpawnLocation::Respawn()
 	FVector NewLocation = FVector(XFloat, YFloat, ZFloat + 300);
 
 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(NewLocation, false, 0, ETeleportType::TeleportPhysics);
-	GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->SetControlRotation(SpawnRotation);
+	//GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->SetControlRotation(SpawnRotation);
 }
 
 //Sets the players spawn position to current position
 void ASpawnLocation::SetSpawnLocation()
 {	
-	SpawnRotation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->GetControlRotation();
+	//SpawnRotation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->GetControlRotation();
 
 	XFloat = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X;
 	YFloat = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y;
