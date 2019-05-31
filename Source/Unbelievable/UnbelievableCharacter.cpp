@@ -28,7 +28,6 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WalljumpHorizontalStrenght = 1200;
 	WalljumpUpwardsStrength = 1500;
 	WallJumpTraceDistance = 100;
-
 	id = this;
 }
 
@@ -48,6 +47,10 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 	else
 		CanWallRun = false;
 
+	if (GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Falling)
+		GetCharacterMovement()->GravityScale = 1.31f;
+	else
+		GetCharacterMovement()->GravityScale = 1;
 }
 
 //Initialize keyboard inputs
@@ -153,7 +156,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 	{
 		if (bUseControllerRotationRoll)
 		{
-			FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.5f));
+			FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.01f));
 			FirstPersonCameraComponent->bUsePawnControlRotation = true;
 			bUseControllerRotationRoll = false;
 		}
@@ -287,7 +290,7 @@ void AUnbelievableCharacter::Jump()
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && Hit.GetActor()->GetUniqueID() != id->
-					GetUniqueID())
+					GetUniqueID() && !Hit.Actor->GetName().Contains("MyMesh"))
 				{
 					HitLocation = Hit.Location;
 					HitNormal = Hit.Normal;
