@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Camera/CameraShake.h"
 #include "UnbelievableCharacter.generated.h"
 
 class UInputComponent;
@@ -41,6 +42,9 @@ public:
 		float WalljumpHorizontalStrenght;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float WalljumpUpwardsStrength;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UCameraShake> MyShake;
 
 protected:
 
@@ -89,6 +93,7 @@ protected:
 
 	void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	void Landed(const FHitResult& Hit) override;
+	void Debug();
 
 public:
 
