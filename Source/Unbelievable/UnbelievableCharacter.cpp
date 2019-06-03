@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "Engine/Engine.h"
 #include "../../../../../../Program Files/Epic Games/UE_4.21/Engine/Plugins/Experimental/AlembicImporter/Source/ThirdParty/Alembic/AlembicDeploy/include/ImathFun.h"
+#include "Camera/CameraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AUnbelievableCharacter::AUnbelievableCharacter()
@@ -41,6 +42,8 @@ void AUnbelievableCharacter::BeginPlay()
 void AUnbelievableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	Debug();
 
 	if (isheld == true)
 		CanWallRun = true;
@@ -137,6 +140,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
 					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.01f));
+					AddMovementInput(GetActorForwardVector(), Value);
 				}
 				else
 				{
@@ -145,11 +149,6 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					MinDistance = 9999999;
 				}
 			}
-		}
-		//Checks if the player should WallRun
-		if (HitLocation != FVector::ZeroVector)
-		{
-			AddMovementInput(GetActorForwardVector(), Value);
 		}
 	}
 	else if (Value != 0.0f)
@@ -306,6 +305,7 @@ void AUnbelievableCharacter::Jump()
 			isheld = false;
 
 			GetCharacterMovement()->AirControl = DoubleJumpControl;
+			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
 		}
 		else
@@ -332,6 +332,7 @@ void AUnbelievableCharacter::DoubleJump()
 	{
 		GetCharacterMovement()->AirControl = DoubleJumpControl;
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
 		DoubleJumpCounter++;
 	}
 }
@@ -341,11 +342,19 @@ void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 {
 	DoubleJumpCounter = 0;
 	id = this;
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.75f);
 }
 #pragma endregion Jump
 
 //Debug functions to be removed after testing
 #pragma region Debug
+void AUnbelievableCharacter::Debug()
+{
+	if (MyShake == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Set MyShake to MyCameraShake in the FirstPersonCharacter"));
+	}
+}
 //void AUnbelievableCharacter::SingleJumpIncrement()
 //{
 //	if (SingleJumpControl < 1)
