@@ -9,6 +9,7 @@
 #include "Runtime/Engine/Classes/GameFramework/Character.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 APlayerDeath::APlayerDeath()
@@ -18,8 +19,10 @@ APlayerDeath::APlayerDeath()
 
 	//Creates the Trigger area for collision
 	SphereRadius = 200.f;
-	MyCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("My Sphere Component"));
-	MyCollisionSphere->InitSphereRadius(SphereRadius);
+	MyCollisionSphere = CreateDefaultSubobject<UBoxComponent>(TEXT("My Sphere Component"));
+	//MyCollisionSphere->InitSphereRadius(SphereRadius);
+	MyCollisionSphere->SetBoxExtent(FVector(200.f, 200.f, 96.f));
+
 	MyCollisionSphere->SetCollisionProfileName("Trigger");
 	RootComponent = MyCollisionSphere;
 	MyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MY MESH"));
@@ -41,7 +44,7 @@ void APlayerDeath::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Shows radius of trigger for debug purposes
-	DrawDebugSphere(GetWorld(), GetActorLocation(), SphereRadius, 20, FColor::Purple, false, -1, 0, 1);
+	DrawDebugBox(GetWorld(), GetActorLocation(), FVector(200.f, 200.f, 96.f), FColor::Purple, false, -1, 0, 1);
 }
 
 //Detects collision and runs code when it collides

@@ -22,7 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere)
-		class USphereComponent* MyCollisionSphere;
+		class UBoxComponent* MyCollisionSphere;
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* MyMesh;
 	float SphereRadius;
