@@ -26,6 +26,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* MyCollisionSphere;
 	UPROPERTY(VisibleAnywhere)
+		bool isCheckPoint = false;
+	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* MyMesh;
 	float SphereRadius;
 

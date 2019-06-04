@@ -214,7 +214,7 @@ void AUnbelievableCharacter::DodgeLeft()
 		const FVector AddForce = -(ForwardDir * 750) + FVector(0, 0, 10) * 10;
 
 		//Launches the player in the direction just found
-		ACharacter::LaunchCharacter(AddForce, false, true);
+		ACharacter::LaunchCharacter(AddForce, false, false);
 
 		//Starts the cooldown timer for the dodge
 		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::DodgeCooldown, 1.0f, false, 1.0f);
@@ -237,7 +237,7 @@ void AUnbelievableCharacter::DodgeRight()
 		const FVector AddForce = (ForwardDir * 750) + FVector(0, 0, 10) * 10;
 
 		//Launches the player in the direction just found
-		ACharacter::LaunchCharacter(AddForce, false, true);
+		ACharacter::LaunchCharacter(AddForce, false, false);
 
 		//Starts the cooldown timer for the dodge
 		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::DodgeCooldown, 1.0f, false, 1.0f);
@@ -289,7 +289,7 @@ void AUnbelievableCharacter::Jump()
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && Hit.GetActor()->GetUniqueID() != id->
-					GetUniqueID() && !Hit.Actor->GetName().Contains("MyMesh"))
+					GetUniqueID() && !Hit.Actor->GetName().Contains("SpawnPoint") && !Hit.Actor->GetName().Contains("PlayerDeath") && !Hit.Actor->GetName().Contains("Portal"))
 				{
 					HitLocation = Hit.Location;
 					HitNormal = Hit.Normal;

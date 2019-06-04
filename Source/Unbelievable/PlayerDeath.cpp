@@ -57,7 +57,7 @@ void APlayerDeath::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		{
 			//Calls function from ASpawnLocation script
 			((AUnbelievableCharacter*)OtherActor)->GetCharacterMovement()->StopMovementImmediately();
-			((ASpawnLocation*)OtherActor)->Respawn();
+			((ASpawnLocation*)OtherActor)->ReSpawn();
 		}
 	}
 }

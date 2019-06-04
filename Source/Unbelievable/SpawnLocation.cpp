@@ -8,10 +8,7 @@
 // Sets default values
 ASpawnLocation::ASpawnLocation()
 {
-	//SpawnRotation = FRotator::ZeroRotator;
-
-	ZFloat = GetActorLocation().Z;
-
+	//ZFloat = GetActorLocation().Z;
 	//const int C = 2;
 }
 
@@ -28,19 +25,20 @@ void ASpawnLocation::Tick(float DeltaTime)
 }
 
 //Sets player back to the last spawn point
-void ASpawnLocation::Respawn()
+void ASpawnLocation::ReSpawn() const
 {
-	FVector NewLocation = FVector(XFloat, YFloat, ZFloat + 300);
-
-	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(NewLocation, false, 0, ETeleportType::TeleportPhysics);
-	//GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->SetControlRotation(SpawnRotation);
+	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorLocation(SpawnLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->SetControlRotation(SpawnRotation);
 }
 
 //Sets the players spawn position to current position
 void ASpawnLocation::SetSpawnLocation()
 {	
-	//SpawnRotation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->GetControlRotation();
+	FVector f_vec;
+	f_vec.X = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X;
+	f_vec.Y = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y;
+	f_vec.Z = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Z;
 
-	XFloat = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().X;
-	YFloat = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation().Y;
+	SpawnLocation = FVector(f_vec);
+	SpawnRotation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetController()->GetControlRotation();
 }

@@ -136,7 +136,7 @@ void ATrialTracking::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 			//Calls function from ASpawnLocation script
 			((AUnbelievableCharacter*)OtherActor)->GetCharacterMovement()->StopMovementImmediately();
-			((ASpawnLocation*)OtherActor)->Respawn();
+			((ASpawnLocation*)OtherActor)->ReSpawn();
 			Destroy();
 		}
 	}
