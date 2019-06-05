@@ -304,7 +304,7 @@ void AUnbelievableCharacter::Jump()
 		{
 			isheld = false;
 
-			GetCharacterMovement()->AirControl = DoubleJumpControl;
+			GetCharacterMovement()->AirControl = 1;
 			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
 		}
