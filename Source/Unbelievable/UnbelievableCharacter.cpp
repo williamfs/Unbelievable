@@ -7,6 +7,7 @@
 #include "Engine/Engine.h"
 #include "../../../../../../Program Files/Epic Games/UE_4.21/Engine/Plugins/Experimental/AlembicImporter/Source/ThirdParty/Alembic/AlembicDeploy/include/ImathFun.h"
 #include "Camera/CameraComponent.h"
+//#include "DeathTracker.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AUnbelievableCharacter::AUnbelievableCharacter()
@@ -36,6 +37,8 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 void AUnbelievableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//GetWorld()->SpawnActor<ADeathTracker>(ADeathTracker::StaticClass(), FVector(0,0,0), FRotator::ZeroRotator);
 }
 
 //Updates every frame
@@ -91,7 +94,7 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 //Movement for forward and backwards
 void AUnbelievableCharacter::MoveForward(float Value)
 {
-	if (CanWallRun == true && Value != 0.0f && !GetCharacterMovement()->IsMovingOnGround())
+	if (CanWallRun && Value != 0.0f && !GetCharacterMovement()->IsMovingOnGround() && DisableSpecialMovement)
 	{
 		// Do a ring of traces
 		FVector TraceStart = GetActorLocation();
@@ -202,7 +205,7 @@ void AUnbelievableCharacter::LookUpAtRate(float Rate)
 void AUnbelievableCharacter::DodgeLeft()
 {
 	//checks if cooldown is active
-	if (CanDodge == true)
+	if (CanDodge == true && DisableSpecialMovement)
 	{
 		CanDodge = false;
 
@@ -225,7 +228,7 @@ void AUnbelievableCharacter::DodgeLeft()
 void AUnbelievableCharacter::DodgeRight()
 {
 	//checks if cooldown is active
-	if (CanDodge == true)
+	if (CanDodge == true && DisableSpecialMovement)
 	{
 		CanDodge = false;
 
@@ -262,7 +265,7 @@ void AUnbelievableCharacter::DodgeCooldown()
 //Controls if the player should jump or wall jump
 void AUnbelievableCharacter::Jump()
 {
-	if (!GetCharacterMovement()->IsMovingOnGround())
+	if (!GetCharacterMovement()->IsMovingOnGround() && DisableSpecialMovement)
 	{
 		// Do a ring of traces
 		FVector TraceStart = GetActorLocation();
@@ -289,7 +292,7 @@ void AUnbelievableCharacter::Jump()
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && Hit.GetActor()->GetUniqueID() != id->
-					GetUniqueID() && !Hit.Actor->GetName().Contains("SpawnPoint") && !Hit.Actor->GetName().Contains("PlayerDeath") && !Hit.Actor->GetName().Contains("Portal"))
+					GetUniqueID() && !Hit.Actor->GetName().Contains("Portal") && !Hit.Actor->GetName().Contains("DeathTracker"))
 				{
 					HitLocation = Hit.Location;
 					HitNormal = Hit.Normal;
@@ -322,13 +325,13 @@ void AUnbelievableCharacter::Jump()
 //Jump functionality, launches player into air and can be pressed twice and is reset when touching the ground
 void AUnbelievableCharacter::DoubleJump()
 {
-	if (DoubleJumpCounter == 0)
+	if (DoubleJumpCounter == 0 && DisableSpecialMovement)
 	{
 		GetCharacterMovement()->AirControl = SingleJumpControl;
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		DoubleJumpCounter++;
 	}
-	else if (DoubleJumpCounter == 1)
+	else if (DoubleJumpCounter == 1 && DisableSpecialMovement)
 	{
 		GetCharacterMovement()->AirControl = DoubleJumpControl;
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
