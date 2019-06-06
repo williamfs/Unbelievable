@@ -103,4 +103,8 @@ public:
 	struct FTimerHandle MemberTimerHandle;
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditAnywhere)
+		bool DisableSpecialMovement = true;
+
 };
