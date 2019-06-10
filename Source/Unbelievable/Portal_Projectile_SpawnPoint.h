@@ -26,6 +26,9 @@ public:
 
 	float currentTime;							 // Holds the current alive time of GameObject
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inherited Level Selection")
+		int levelSelected;
+
 	UPROPERTY(EditAnywhere)
 	FVector ourLoc;								 // Hold our spawn location
 
@@ -34,7 +37,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Our Spawning Object")
 		TSubclassOf<ATrialTracking> ourSpawningObject; // Holds the blue prints of the object we want to spawn
 
-	UPROPERTY(EditAnywhere, Category = "Rate in Seconds for Spawning")
 		float spawnDelay;
+
+	UPROPERTY(EditAnywhere, Category = "Rate in Seconds for Spawning")
+		float explorationSpawnDelay;
+
+	UPROPERTY(EditAnywhere, Category = "Rate in Seconds for Spawning")
+		float coreSpawnDelay;
+	
+	UPROPERTY(EditAnywhere, Category = "Rate in Seconds for Spawning")
+		float hardSpawnDelay;
+
+	UPROPERTY(EditAnywhere, Category = "Rate in Seconds for Spawning")
+		float shadowWalkerSpawnDelay;
+
+	UPROPERTY(EditAnywhere, Category = "Free Roam or Bullets?")
+		bool isFreeRoam;
 
 };

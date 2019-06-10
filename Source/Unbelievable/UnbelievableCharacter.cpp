@@ -5,9 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
-#include "../../../../../../Program Files/Epic Games/UE_4.21/Engine/Plugins/Experimental/AlembicImporter/Source/ThirdParty/Alembic/AlembicDeploy/include/ImathFun.h"
-#include "Camera/CameraComponent.h"
-//#include "DeathTracker.h"
+#include "DeathTracker.h"
+#include "GameFramework/PlayerController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AUnbelievableCharacter::AUnbelievableCharacter()
@@ -38,7 +37,9 @@ void AUnbelievableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//GetWorld()->SpawnActor<ADeathTracker>(ADeathTracker::StaticClass(), FVector(0,0,0), FRotator::ZeroRotator);
+	UClass* player = ADeathTracker::StaticClass();
+
+	//GetWorld()->SpawnActor<ADeathTracker>(player, FVector(0,0,0), FRotator::ZeroRotator);
 }
 
 //Updates every frame

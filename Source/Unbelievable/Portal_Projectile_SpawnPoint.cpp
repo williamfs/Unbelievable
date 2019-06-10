@@ -25,6 +25,26 @@ void APortal_Projectile_SpawnPoint::BeginPlay()
 {
 	Super::BeginPlay();
 	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("We are alive"));
+	switch (levelSelected)
+	{
+		case 1: 
+			spawnDelay = explorationSpawnDelay;
+			isFreeRoam = true;
+			break;
+		case 2: 
+			spawnDelay = coreSpawnDelay;
+			break;
+		case 3: 
+			spawnDelay = hardSpawnDelay;
+			break;
+		case 4:
+			spawnDelay = shadowWalkerSpawnDelay;
+			break;
+		default:
+			spawnDelay = explorationSpawnDelay;
+			isFreeRoam=true;
+			break;
+	}
 }
 
 // Called every frame
@@ -36,7 +56,7 @@ void APortal_Projectile_SpawnPoint::Tick(float DeltaTime)
 	FString ourString = FString::SanitizeFloat(currentTime);
 	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Our Current Time: ") + ourString);
 
-	if (currentTime >= spawnDelay)
+	if (currentTime >= spawnDelay && isFreeRoam==false)
 	{
 		
 
