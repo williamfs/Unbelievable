@@ -97,7 +97,10 @@ protected:
 	void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	void Landed(const FHitResult& Hit) override;
 	void Debug();
+private:
 
+	void SaveGame();
+	void LoadGame();
 public:
 
 	bool isheld = false;

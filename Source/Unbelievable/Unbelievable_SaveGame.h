@@ -14,4 +14,9 @@ class UNBELIEVABLE_API UUnbelievable_SaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
+public:
+	UUnbelievable_SaveGame();
+
+	UPROPERTY(EditAnywhere)
+		FVector PlayerLocation;
 };
