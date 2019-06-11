@@ -34,6 +34,17 @@ public:
 		class UStaticMeshComponent* MyMesh;
 	UPROPERTY(EditAnywhere)
 		float SphereRadius;
+	UPROPERTY(EditAnywhere, Category = "Damage based on Mode")
+		int coreModeDamage;
+	UPROPERTY(EditAnywhere, Category = "Damage based on Mode")
+		int hardModeDamage;
+	UPROPERTY(EditAnywhere, Category = "Damage based on Mode")
+		int shadowModeDamage;
+	UPROPERTY(VisibleAnywhere)
+		int damageToDeal;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inherited Level Selection")
+		int levelSelected;
 
 	UFUNCTION()
 		void OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

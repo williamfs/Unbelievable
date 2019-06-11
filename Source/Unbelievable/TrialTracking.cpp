@@ -35,6 +35,22 @@ ATrialTracking::ATrialTracking()
 void ATrialTracking::BeginPlay()
 {
 	Super::BeginPlay();
+
+	switch (levelSelected)
+	{
+		case 1:
+			damageToDeal = 0;
+			break;
+		case 2:
+			damageToDeal = coreModeDamage;
+			break;
+		case 3:
+			damageToDeal = hardModeDamage;
+			break;
+		case 4: 
+			damageToDeal = shadowModeDamage;
+			break;
+	}
 	
 }
 
@@ -119,7 +135,6 @@ void ATrialTracking::Tick(float DeltaTime)
 	/*projectileLocation.Z += 50 *DeltaTime;
 	SetActorLocation(projectileLocation);*/
 	FVector playerposition= GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation(); 
-
 	//UpdateXposition(projectileLocation,playerposition);
 	UpdateYPosition(projectileLocation, playerposition);
 	//UpdateZPosition(projectileLocation, playerposition);
@@ -136,6 +151,7 @@ void ATrialTracking::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 		{
 			//Calls function from ASpawnLocation script
 			((AUnbelievableCharacter*)OtherActor)->GetCharacterMovement()->StopMovementImmediately();
+			((AUnbelievableCharacter*)OtherActor)->takeDamage(damageToDeal);
 			((ASpawnLocation*)OtherActor)->ReSpawn();
 			Destroy();
 		}

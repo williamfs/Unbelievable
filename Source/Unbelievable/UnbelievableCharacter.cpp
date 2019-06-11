@@ -5,7 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
-#include "DeathTracker.h"
+//#include "DeathTracker.h"
 #include "GameFramework/PlayerController.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -30,6 +30,7 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WalljumpUpwardsStrength = 1500;
 	WallJumpTraceDistance = 100;
 	id = this;
+	healthPoints = 10;
 }
 
 //Called on start
@@ -37,9 +38,14 @@ void AUnbelievableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UClass* player = ADeathTracker::StaticClass();
+	//UClass* player = ADeathTracker::StaticClass();
 
 	//GetWorld()->SpawnActor<ADeathTracker>(player, FVector(0,0,0), FRotator::ZeroRotator);
+}
+
+void AUnbelievableCharacter::takeDamage(int damageAmount)
+{
+	healthPoints -= damageAmount;
 }
 
 //Updates every frame

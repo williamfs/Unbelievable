@@ -51,7 +51,10 @@ protected:
 	void BeginPlay() override;
 
 public:
-
+	UPROPERTY(VisibleAnywhere)
+		int healthPoints;
+	UFUNCTION()
+		void takeDamage(int damageAmount);
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
