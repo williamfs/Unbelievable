@@ -76,40 +76,51 @@ void ATrialTracking::UpdateXposition(FVector projectileLocation, FVector playerp
 void ATrialTracking::UpdateYPosition(FVector projectileLocation, FVector playerposition)
 {
 
-	if (projectileLocation.X > playerposition.X)
-	{
-		projectileLocation.X -= projectileSpeed;
-		//SetActorLocation(projectileLocation);
-	}
-	else if (projectileLocation.X < playerposition.X)
-	{
-		projectileLocation.X += projectileSpeed;
-		//SetActorLocation(projectileLocation);
-	}
+	//if (projectileLocation.X > playerposition.X)
+	//{
+	//	projectileLocation.X -= projectileSpeed;
+	//	//SetActorLocation(projectileLocation);
+	//}
+	//else if (projectileLocation.X < playerposition.X)
+	//{
+	//	projectileLocation.X += projectileSpeed;
+	//	//SetActorLocation(projectileLocation);
+	//}
+
+	//if (projectileLocation.Y > playerposition.Y)
+	//{
+	//	projectileLocation.Y -= projectileSpeed;
+	//	//SetActorLocation(projectileLocation);
+	//}
+	//else if (projectileLocation.Y < playerposition.Y)
+	//{
+	//	projectileLocation.Y += projectileSpeed;
+	//	//SetActorLocation(projectileLocation);
+	//}
+
+	//if (projectileLocation.Z > playerposition.Z)
+	//{
+	//	projectileLocation.Z -= projectileSpeed;
+	//	//SetActorLocation(projectileLocation);
+	//}
+	//else if (projectileLocation.Z < playerposition.Z)
+	//{
+	//	projectileLocation.Z += projectileSpeed;
+	//	//SetActorLocation(projectileLocation);
+	//}
+
+	//SetActorLocation(projectileLocation);
 
 	if (projectileLocation.Y > playerposition.Y)
-	{
-		projectileLocation.Y -= projectileSpeed;
-		//SetActorLocation(projectileLocation);
-	}
-	else if (projectileLocation.Y < playerposition.Y)
-	{
-		projectileLocation.Y += projectileSpeed;
-		//SetActorLocation(projectileLocation);
-	}
-
-	if (projectileLocation.Z > playerposition.Z)
-	{
-		projectileLocation.Z -= projectileSpeed;
-		//SetActorLocation(projectileLocation);
-	}
-	else if (projectileLocation.Z < playerposition.Z)
-	{
-		projectileLocation.Z += projectileSpeed;
-		//SetActorLocation(projectileLocation);
-	}
-
-	SetActorLocation(projectileLocation);
+		{
+			projectileLocation.Y -= projectileSpeed;
+			SetActorLocation(projectileLocation);
+		}
+		else if (projectileLocation.Y < playerposition.Y)
+		{
+			projectileLocation.Y += projectileSpeed;
+			SetActorLocation(projectileLocation);
+		}
 	
 }
 
