@@ -8,6 +8,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Unbelievable_SaveGame.h"
 #include "GameFramework/PlayerController.h"
+#include "DeathTracker.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AUnbelievableCharacter::AUnbelievableCharacter()
@@ -39,9 +40,9 @@ void AUnbelievableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//UClass* player = ADeathTracker::StaticClass();
+	UClass* player = ADeathTracker::StaticClass();
 
-	//GetWorld()->SpawnActor<ADeathTracker>(player, FVector(0,0,0), FRotator::ZeroRotator);
+	GetWorld()->SpawnActor<ADeathTracker>(player, GetActorLocation(), FRotator::ZeroRotator);
 }
 
 void AUnbelievableCharacter::takeDamage(int damageAmount)
@@ -126,7 +127,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 			if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, RightEnd, ECC_EngineTraceChannel2, TraceParams))
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
-				if ((Hit.Location - TraceStart).Size() < MinDistance)
+				if ((Hit.Location - TraceStart).Size() < MinDistance && !Hit.Actor->GetName().Contains("DeathTracker"))
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
@@ -145,7 +146,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 			else if(GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, LeftEnd, ECC_EngineTraceChannel2, TraceParams))
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
-				if ((Hit.Location - TraceStart).Size() < MinDistance)
+				if ((Hit.Location - TraceStart).Size() < MinDistance && !Hit.Actor->GetName().Contains("DeathTracker"))
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
