@@ -73,7 +73,7 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 {
 	check(PlayerInputComponent);
 	// Sets up test bindings for save and load
-	InputComponent->BindAction("Save", IE_Pressed, this, &AUnbelievableCharacter::SaveGame);
+	InputComponent->BindAction("Save", IE_Pressed, this, &AUnbelievableCharacter::tempSaveGame);
 	InputComponent->BindAction("Load", IE_Pressed, this, &AUnbelievableCharacter::LoadGame);
 	//Sets key binds for jump
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AUnbelievableCharacter::Jump);
@@ -368,6 +368,13 @@ void AUnbelievableCharacter::Debug()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Set MyShake to MyCameraShake in the FirstPersonCharacter"));
 	}
+}
+void AUnbelievableCharacter::tempSaveGame()
+{
+	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
+	SaveGameInstance->PlayerLocation = this->GetActorLocation();
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
 }
 void AUnbelievableCharacter::SaveGame()
 {
