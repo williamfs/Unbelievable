@@ -299,11 +299,11 @@ void AUnbelievableCharacter::Jump()
 			FHitResult Hit(ForceInit);
 
 			//Checks if the player hits a wall
-			if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_EngineTraceChannel2, TraceParams))
+			if (GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, TraceEnd, ECC_WorldStatic, TraceParams))
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && Hit.GetActor()->GetUniqueID() != id->
-					GetUniqueID() && !Hit.Actor->GetName().Contains("Portal") && !Hit.Actor->GetName().Contains("DeathTracker"))
+					GetUniqueID())
 				{
 					HitLocation = Hit.Location;
 					HitNormal = Hit.Normal;
