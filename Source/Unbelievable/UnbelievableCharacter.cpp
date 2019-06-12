@@ -372,7 +372,7 @@ void AUnbelievableCharacter::Debug()
 void AUnbelievableCharacter::SaveGame()
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
-	SaveGameInstance->PlayerLocation = this->GetActorLocation();
+	SaveGameInstance->PlayerLocation = locationToSet;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
 	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
 }

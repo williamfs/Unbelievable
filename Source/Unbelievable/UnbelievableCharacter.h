@@ -114,6 +114,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool DisableSpecialMovement = true;
 
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Location of Saving")
+		FVector locationToSet;
 
 };
