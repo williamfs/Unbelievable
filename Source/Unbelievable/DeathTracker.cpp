@@ -100,7 +100,7 @@ void ADeathTracker::Tick(float DeltaTime)
 
 void ADeathTracker::AddPosTracker()
 {
-	if (((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - GetActorLocation()).Size() > 600) && PosOne != FVector(0,0,0))
+	if (((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - PosOne).Size() > 600) && PosOne != FVector(0,0,0))
 	{
 		if (IsTracking)
 		{
@@ -137,7 +137,7 @@ void ADeathTracker::AddPosTracker()
 	}
 	else if (IsTracking)
 	{
-		SetActorLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
+		//SetActorLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation());
 
 		PosTwenty = PosNineteen;
 		PosNineteen = PosEighteen;
