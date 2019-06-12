@@ -98,6 +98,7 @@ protected:
 	void Landed(const FHitResult& Hit) override;
 	void Debug();
 private:
+	void tempSaveGame();
 	UFUNCTION(BlueprintCallable,Category="Save System Functionality")
 	void SaveGame();
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
