@@ -98,8 +98,9 @@ protected:
 	void Landed(const FHitResult& Hit) override;
 	void Debug();
 private:
-
+	UFUNCTION(BlueprintCallable,Category="Save System Functionality")
 	void SaveGame();
+	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 	void LoadGame();
 public:
 
@@ -112,5 +113,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		bool DisableSpecialMovement = true;
+
+	
 
 };
