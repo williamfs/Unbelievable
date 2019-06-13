@@ -96,6 +96,7 @@ protected:
 
 	void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	void Landed(const FHitResult& Hit) override;
+	void AllowWallJump();
 	void Debug();
 private:
 	void tempSaveGame();
@@ -106,7 +107,7 @@ private:
 public:
 
 	bool isheld = false;
-
+	bool canWallJump = true;
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
 
