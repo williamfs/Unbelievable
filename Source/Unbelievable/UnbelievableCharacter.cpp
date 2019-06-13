@@ -340,7 +340,7 @@ void AUnbelievableCharacter::DoubleJump()
 	{
 		GetCharacterMovement()->AirControl = SingleJumpControl;
 		canWallJump = false;
-		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AUnbelievableCharacter::AllowWallJump, 0.1f, false, 0.1f);
+		GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.1f, false, 0.1f);
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		DoubleJumpCounter++;
 	}

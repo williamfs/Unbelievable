@@ -110,6 +110,7 @@ public:
 	bool canWallJump = true;
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
+	struct FTimerHandle MemberTimerHandle2;
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
