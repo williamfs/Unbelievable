@@ -131,6 +131,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
+
 					GetCharacterMovement()->Velocity.Z = -75;
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
@@ -151,6 +152,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
+
 					GetCharacterMovement()->Velocity.Z = -75;
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
@@ -368,7 +370,6 @@ void AUnbelievableCharacter::AllowWallJump()
 {
 	canWallJump = true;
 }
-
 #pragma endregion Jump
 
 //Debug functions to be removed after testing
