@@ -114,7 +114,7 @@ public:
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 		bool DisableSpecialMovement = true;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Location of Saving")
