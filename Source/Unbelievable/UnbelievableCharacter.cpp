@@ -124,7 +124,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 		for (int i = 0; i < WallJumpTraces; i++)
 		{
 			//Checks if the player hits a wall
-			if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, RightEnd, ECC_EngineTraceChannel2, TraceParams))
+			if (GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, RightEnd, ECC_WorldStatic, TraceParams))
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && !Hit.Actor->GetName().Contains("DeathTracker"))
@@ -135,6 +135,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
 					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, -22.5f).Clamp(), 0.01f));
+					AddMovementInput(GetActorForwardVector(), Value * 1.33f);
 				}
 				else
 				{
@@ -143,7 +144,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					MinDistance = 9999999;
 				}
 			}
-			else if(GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, LeftEnd, ECC_EngineTraceChannel2, TraceParams))
+			else if(GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, LeftEnd, ECC_WorldStatic, TraceParams))
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && !Hit.Actor->GetName().Contains("DeathTracker"))
@@ -154,7 +155,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
 					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.01f));
-					AddMovementInput(GetActorForwardVector(), Value);
+					AddMovementInput(GetActorForwardVector(), Value * 1.33f);
 				}
 				else
 				{
@@ -320,6 +321,8 @@ void AUnbelievableCharacter::Jump()
 
 			GetCharacterMovement()->AirControl = 1;
 			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
+			canWallJump = false;
+			GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.3f, false, 0.3f);
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
 		}
 		else
@@ -339,16 +342,14 @@ void AUnbelievableCharacter::DoubleJump()
 	if (DoubleJumpCounter == 0 && DisableSpecialMovement)
 	{
 		GetCharacterMovement()->AirControl = SingleJumpControl;
-		canWallJump = false;
-		GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.1f, false, 0.1f);
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		DoubleJumpCounter++;
 	}
-	else if (DoubleJumpCounter == 1 && DisableSpecialMovement)
+	else if (DoubleJumpCounter == 1 && DisableSpecialMovement && canWallJump)
 	{
 		GetCharacterMovement()->AirControl = DoubleJumpControl;
 		canWallJump = false;
-		GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.1f, false, 0.1f);
+		GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.3f, false, 0.3f);
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
 		DoubleJumpCounter++;
