@@ -317,14 +317,12 @@ void AUnbelievableCharacter::Jump()
 		}
 
 		//Checks if the player should jump from the wall and launches them
-		if (HitLocation != FVector::ZeroVector && canWallJump)
+		if (HitLocation != FVector::ZeroVector)
 		{
 			isheld = false;
 
 			GetCharacterMovement()->AirControl = 1;
 			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
-			canWallJump = false;
-			GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.3f, false, 0.3f);
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
 		}
 		else
@@ -347,11 +345,9 @@ void AUnbelievableCharacter::DoubleJump()
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		DoubleJumpCounter++;
 	}
-	else if (DoubleJumpCounter == 1 && DisableSpecialMovement && canWallJump)
+	else if (DoubleJumpCounter == 1 && DisableSpecialMovement)
 	{
 		GetCharacterMovement()->AirControl = DoubleJumpControl;
-		canWallJump = false;
-		GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::AllowWallJump, 0.3f, false, 0.3f);
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
 		DoubleJumpCounter++;
@@ -364,11 +360,6 @@ void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 	DoubleJumpCounter = 0;
 	id = this;
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.75f);
-}
-
-void AUnbelievableCharacter::AllowWallJump()
-{
-	canWallJump = true;
 }
 #pragma endregion Jump
 
