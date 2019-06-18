@@ -29,6 +29,7 @@ ATrialTracking::ATrialTracking()
 
 	//Creates the Collision Detection dynamic
 	MyCollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ATrialTracking::OnOverLapBegin);
+	//MyCollisionSphere->OnComponentEndOverlap.AddDynamic(this, &ATrialTracking::OnOverLapEnd);
 }
 
 // Called when the game starts or when spawned

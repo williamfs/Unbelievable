@@ -95,6 +95,7 @@ protected:
 protected:
 
 	void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	UFUNCTION(BlueprintCallable, Category = "On Land shake method")
 	void Landed(const FHitResult& Hit) override;
 	void Debug();
 private:
@@ -114,6 +115,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool DisableSpecialMovement = true;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool shouldShake = true;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Location of Saving")
 		FVector locationToSet;

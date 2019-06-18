@@ -6,4 +6,8 @@
 UUnbelievable_SaveGame::UUnbelievable_SaveGame()
 {
 	PlayerLocation = FVector(0.f, 0.f, 0.f);
+	gameTimeTotal = 0.0f;
+	dateOfLastPlay = FString(TEXT("6/17/2019"));
+	modeOfPlay = FString(TEXT("Exploration"));
+	numberOfDeathes = 0;
 }
