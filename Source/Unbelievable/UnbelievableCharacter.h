@@ -95,6 +95,7 @@ protected:
 protected:
 
 	void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	UFUNCTION(BlueprintCallable, Category = "On Land shake method")
 	void Landed(const FHitResult& Hit) override;
 	void Debug();
 private:
