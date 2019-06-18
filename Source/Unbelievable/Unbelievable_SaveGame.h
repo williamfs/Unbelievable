@@ -19,4 +19,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		FVector PlayerLocation;
+
+	UPROPERTY(EditAnywhere)
+		float gameTimeTotal;
+
+	UPROPERTY(EditAnywhere)
+		 FString dateOfLastPlay;
+
+	UPROPERTY(EditAnywhere)
+		FString modeOfPlay;
+
+	UPROPERTY(EditAnywhere)
+		int numberOfDeathes;
 };

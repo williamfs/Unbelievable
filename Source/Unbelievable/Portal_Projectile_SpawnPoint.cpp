@@ -1,13 +1,36 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Portal_Projectile_SpawnPoint.h"
+#include "Engine/Engine.h"
+#include "CoreMinimal.h"
+#include "PlayerDeath.h"
+#include "SpawnLocation.h"
+#include "DrawDebugHelpers.h"
+#include "UnbelievableCharacter.h"
+#include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "UObjectIterator.h"
 #include "Engine.h"
+#include "GameFramework/PlayerController.h"
+#include "Runtime/Engine/Classes/GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 // Sets default values
 APortal_Projectile_SpawnPoint::APortal_Projectile_SpawnPoint()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+	//Creates the Trigger area for collision
+	//MyCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("My Sphere Component"));
+	//MyCollisionSphere->InitSphereRadius(SphereRadius);
+	//MyCollisionSphere->SetCollisionProfileName("Trigger");
+	//RootComponent = MyCollisionSphere;
+	//MyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MY MESH"));
+	//MyMesh->SetupAttachment(RootComponent);
+
+	////Creates the Collision Detection dynamic
+	//MyCollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APortal_Projectile_SpawnPoint::OnOverLapBegin);
+	//MyCollisionSphere->OnComponentEndOverlap.AddDynamic(this, &APortal_Projectile_SpawnPoint::OnOverLapEnd);
 }
 
 APortal_Projectile_SpawnPoint::APortal_Projectile_SpawnPoint(const FObjectInitializer & ObjectInitializer):Super(ObjectInitializer)
@@ -16,7 +39,16 @@ APortal_Projectile_SpawnPoint::APortal_Projectile_SpawnPoint(const FObjectInitia
 	PrimaryActorTick.bCanEverTick = true;
 	currentTime = 0.f;
 
-	
+	MyCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("My Sphere Component"));
+	MyCollisionSphere->InitSphereRadius(SphereRadius);
+	MyCollisionSphere->SetCollisionProfileName("Trigger");
+	RootComponent = MyCollisionSphere;
+	MyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MY MESH"));
+	MyMesh->SetupAttachment(RootComponent);
+
+	//Creates the Collision Detection dynamic
+	MyCollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APortal_Projectile_SpawnPoint::OnOverLapBegin);
+	//MyCollisionSphere->OnComponentEndOverlap.AddDynamic(this, &APortal_Projectile_SpawnPoint::OnOverLapEnd);
 
 }
 
@@ -72,6 +104,33 @@ void APortal_Projectile_SpawnPoint::Tick(float DeltaTime)
 
 		ATrialTracking* ourNewObject = GetWorld()->SpawnActor<ATrialTracking>(ourSpawningObject, ourLoc, ourRotation, spawnParams);
 		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("We spawned an object. "));
+	}
+}
+
+void APortal_Projectile_SpawnPoint::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OverlapBegin has been called."));
+	if ((OtherActor != nullptr) && (OtherActor != this) && OtherComp != nullptr)
+	{
+		if (OtherActor->GetName() == "FirstPersonCharacter2")
+		{
+			UE_LOG(LogTemp, Warning, TEXT("You are in range of the turret"));
+			inRange = true;
+		}
+	}
+}
+
+void APortal_Projectile_SpawnPoint::OnOverLapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if ((OtherActor != nullptr) && (OtherActor != this) && OtherComp != nullptr)
+	{
+		if (OtherActor->GetName() == "FirstPersonCharacter2")
+		{
+			UE_LOG(LogTemp, Warning, TEXT("You are not in range of the turret"));
+			inRange = false;
+		}
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "Editor/UnrealEd/Public/Editor.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Unbelievable_SaveGame.h"
 #include "GameFramework/PlayerController.h"
@@ -406,6 +407,21 @@ void AUnbelievableCharacter::tempSaveGame()
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
 	SaveGameInstance->PlayerLocation = this->GetActorLocation();
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+	FString command = FString(TEXT("HighResShot 1"));
+	if (GEditor)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("We made it to G Editor"));
+		UWorld* world = GEditor->GetEditorWorldContext().World();
+
+		if (world)
+		{
+			GEditor->Exec(world, *command);
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Photoshoot"));
+		}
+	}
 	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
 }
 void AUnbelievableCharacter::SaveGame()
