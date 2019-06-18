@@ -116,6 +116,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		bool DisableSpecialMovement = true;
 
+	UPROPERTY(BlueprintReadWrite)
+		bool shouldShake = true;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Location of Saving")
 		FVector locationToSet;
 

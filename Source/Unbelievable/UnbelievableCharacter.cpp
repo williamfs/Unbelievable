@@ -389,7 +389,10 @@ void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 	WallClimb = true;
 	DoubleJumpCounter = 0;
 	id = this;
-	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.75f);
+	if (shouldShake)
+	{
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.75f);
+	}
 }
 #pragma endregion Jump
 
