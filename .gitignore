@@ -102,3 +102,12 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # End of https://www.gitignore.io/api/c++,unrealengine
+Content/Blueprints/BP_Warp.uasset
+Content/Blueprints/Platforms/BP_PhasingPlatform.uasset
+Content/Levels/Level1Redux.umap
+Content/Particles/M_TurretSpotlight.uasset
+Content/Particles/M_TurretTestCone.uasset
+Source/Unbelievable/DeathTracker.cpp
+Source/Unbelievable/DeathTracker.h
+Source/Unbelievable/UnbelievableCharacter.cpp
+Source/Unbelievable/UnbelievableCharacter.h

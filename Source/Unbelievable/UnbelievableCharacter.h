@@ -95,6 +95,7 @@ protected:
 protected:
 
 	void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+	UFUNCTION(BlueprintCallable, Category = "On Land shake method")
 	void Landed(const FHitResult& Hit) override;
 	void Debug();
 private:
@@ -108,6 +109,7 @@ public:
 	bool isheld = false;
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
+	struct FTimerHandle MemberTimerHandle2;
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
@@ -117,4 +119,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Location of Saving")
 		FVector locationToSet;
 
+	bool WallClimb = true;
+	bool WallClimb2 = true;
+
+	UFUNCTION()
+		void RunFall();
 };
