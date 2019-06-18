@@ -108,6 +108,7 @@ public:
 	bool isheld = false;
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
+	struct FTimerHandle MemberTimerHandle2;
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
@@ -117,4 +118,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Location of Saving")
 		FVector locationToSet;
 
+	bool WallClimb = true;
+	bool WallClimb2 = true;
+
+	UFUNCTION()
+		void RunFall();
 };

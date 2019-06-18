@@ -19,7 +19,7 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	//Sets up the camera functionality
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->RelativeLocation = FVector(-39.56f, 1.75f, 64.f); // Position the camera
+	FirstPersonCameraComponent->RelativeLocation = FVector(30.0, 1.75f, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -57,7 +57,7 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 
 	Debug();
 
-	if (isheld == true)
+	if (isheld)
 		CanWallRun = true;
 	else
 		CanWallRun = false;
@@ -131,12 +131,22 @@ void AUnbelievableCharacter::MoveForward(float Value)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
+					if (WallClimb)
+					{
+						GetCharacterMovement()->Velocity.Z = 50;
+						if (WallClimb2) 
+						{
+							GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::RunFall, 1.0f, false, 1.0f);
+							WallClimb2 = false;
+						}
+					}
+					else
+						GetCharacterMovement()->Velocity.Z = -75;
 
-					GetCharacterMovement()->Velocity.Z = -75;
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
 					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, -22.5f).Clamp(), 0.01f));
-					AddMovementInput(GetActorForwardVector(), Value * 1.33f);
+					AddMovementInput(GetActorForwardVector(), Value * 2);
 				}
 				else
 				{
@@ -152,12 +162,21 @@ void AUnbelievableCharacter::MoveForward(float Value)
 				{
 					HitLocation = Hit.Location;
 					MinDistance = (Hit.Location - TraceStart).Size();
-
-					GetCharacterMovement()->Velocity.Z = -75;
+					if (WallClimb)
+					{
+						GetCharacterMovement()->Velocity.Z = 50;
+						if (WallClimb2)
+						{
+							GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::RunFall, 1.0f, false, 1.0f);
+							WallClimb2 = false;
+						}
+					}
+					else
+						GetCharacterMovement()->Velocity.Z = -75;
 					FirstPersonCameraComponent->bUsePawnControlRotation = false;
 					bUseControllerRotationRoll = true;
 					FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 22.5f).Clamp(), 0.01f));
-					AddMovementInput(GetActorForwardVector(), Value * 1.33f);
+					AddMovementInput(GetActorForwardVector(), Value * 2);
 				}
 				else
 				{
@@ -179,6 +198,13 @@ void AUnbelievableCharacter::MoveForward(float Value)
 		StopSideMovement = false;
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
+}
+
+
+void AUnbelievableCharacter::RunFall()
+{
+	WallClimb = false;
+	WallClimb2 = true;
 }
 
 //Movement for right and left
@@ -320,7 +346,7 @@ void AUnbelievableCharacter::Jump()
 		if (HitLocation != FVector::ZeroVector)
 		{
 			isheld = false;
-
+			WallClimb = true;
 			GetCharacterMovement()->AirControl = 1;
 			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
 			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
@@ -341,12 +367,14 @@ void AUnbelievableCharacter::DoubleJump()
 {
 	if (DoubleJumpCounter == 0 && DisableSpecialMovement)
 	{
+		WallClimb = true;
 		GetCharacterMovement()->AirControl = SingleJumpControl;
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		DoubleJumpCounter++;
 	}
 	else if (DoubleJumpCounter == 1 && DisableSpecialMovement)
 	{
+		WallClimb = true;
 		GetCharacterMovement()->AirControl = DoubleJumpControl;
 		ACharacter::LaunchCharacter(FVector(0, 0, JumpHeight), false, true);
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
@@ -357,6 +385,7 @@ void AUnbelievableCharacter::DoubleJump()
 //Detects when the players touches the ground
 void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 {
+	WallClimb = true;
 	DoubleJumpCounter = 0;
 	id = this;
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.75f);

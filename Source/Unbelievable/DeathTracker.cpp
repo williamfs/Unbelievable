@@ -86,7 +86,7 @@ void ADeathTracker::Tick(float DeltaTime)
 		RetraceSteps(DeltaTime);
 	}
 
-	if (!IsTracking && !PlayDeath)
+	if (!PlayDeath)
 	{
 		FVector NewLocation = GetActorLocation();
 		const float delta_height = (FMath::Sin(RunningTime + DeltaTime) - FMath::Sin(RunningTime));
@@ -100,40 +100,9 @@ void ADeathTracker::Tick(float DeltaTime)
 
 void ADeathTracker::AddPosTracker()
 {
-	if (((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - PosOne).Size() > 600) && PosOne != FVector(0,0,0))
+	if (((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - PosOne).Size() > 600) && PosOne != FVector(0,0,0) && !PlayDeath)
 	{
-		if (IsTracking)
-		{
-			CheckPlayerDeath++;
-			if (CheckPlayerDeath >= 3)
-			{
-				on_death();
-				CheckPlayerDeath = 0;
-			}
-			else
-			{
-				PosTwenty = FVector(0,0,0);
-				PosNineteen = FVector(0, 0, 0);
-				PosEighteen = FVector(0, 0, 0);
-				PosSeventeen = FVector(0, 0, 0);
-				PosSixteen = FVector(0, 0, 0);
-				PosFifteen = FVector(0, 0, 0);
-				PosFourteen = FVector(0, 0, 0);
-				PosThirteen = FVector(0, 0, 0);
-				PosTwelve = FVector(0, 0, 0);
-				PosEleven = FVector(0, 0, 0);
-				PosTen = FVector(0, 0, 0);
-				PosNine = FVector(0, 0, 0);
-				PosEight = FVector(0, 0, 0);
-				PosSeven = FVector(0, 0, 0);
-				PosSix = FVector(0, 0, 0);
-				PosFive = FVector(0, 0, 0);
-				PosFour = FVector(0, 0, 0);
-				PosThree = FVector(0, 0, 0);
-				PosTwo = FVector(0, 0, 0);
-				PosOne = FVector(0, 0, 0);
-			}
-		}
+		on_death();
 	}
 	else if (IsTracking)
 	{
@@ -167,9 +136,50 @@ void ADeathTracker::on_death()
 	if (IsTracking)
 	{
 		SphereMesh->SetMaterial(0, DeadMaterial);
-		IsTracking = false;
-		SetActorLocation(PosTwenty);
-		GetWorld()->SpawnActor<ADeathTracker>(ADeathTracker::StaticClass(), PosOne, FRotator::ZeroRotator);
+		//IsTracking = false;
+		PosTwenty2 = PosTwenty;
+		PosNineteen2 = PosNineteen;
+		PosEighteen2 = PosEighteen;
+		PosSeventeen2 = PosSeventeen;
+		PosSixteen2 = PosSixteen;
+		PosFifteen2 = PosFifteen;
+		PosFourteen2 = PosFourteen;
+		PosThirteen2 = PosThirteen;
+		PosTwelve2 = PosTwelve;
+		PosEleven2 = PosEleven;
+		PosTen2 = PosTen;
+		PosNine2 = PosNine;
+		PosEight2 = PosEight;
+		PosSeven2 = PosSeven;
+		PosSix2 = PosSix;
+		PosFive2 = PosFive;
+		PosFour2 = PosFour;
+		PosThree2 = PosThree;
+		PosTwo2 = PosTwo;
+		PosOne2 = PosOne;
+		SetActorLocation(PosTwenty2);
+
+		PosTwenty = FVector(0, 0, 0);
+		PosNineteen = FVector(0, 0, 0);
+		PosEighteen = FVector(0, 0, 0);
+		PosSeventeen = FVector(0, 0, 0);
+		PosSixteen = FVector(0, 0, 0);
+		PosFifteen = FVector(0, 0, 0);
+		PosFourteen = FVector(0, 0, 0);
+		PosThirteen = FVector(0, 0, 0);
+		PosTwelve = FVector(0, 0, 0);
+		PosEleven = FVector(0, 0, 0);
+		PosTen = FVector(0, 0, 0);
+		PosNine = FVector(0, 0, 0);
+		PosEight = FVector(0, 0, 0);
+		PosSeven = FVector(0, 0, 0);
+		PosSix = FVector(0, 0, 0);
+		PosFive = FVector(0, 0, 0);
+		PosFour = FVector(0, 0, 0);
+		PosThree = FVector(0, 0, 0);
+		PosTwo = FVector(0, 0, 0);
+		PosOne = FVector(0, 0, 0);
+		//GetWorld()->SpawnActor<ADeathTracker>(ADeathTracker::StaticClass(), PosOne, FRotator::ZeroRotator);
 	}
 }
 
@@ -177,7 +187,7 @@ void ADeathTracker::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 {
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		if (OtherActor->GetName().Contains("FirstPersonCharacter") && !IsTracking)
+		if (OtherActor->GetName().Contains("FirstPersonCharacter"))
 		{
 			PlayDeath = true;
 		}
@@ -187,7 +197,7 @@ void ADeathTracker::OnOverLapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 void ADeathTracker::RetraceSteps(float FrameDeltaTime)
 {
 	if (target == FVector(0, 0, 0))
-		target = PosTwenty;
+		target = PosTwenty2;
 
 	const float my_distance_from = (GetActorLocation() - target).Size();
 
@@ -202,49 +212,49 @@ void ADeathTracker::RetraceSteps(float FrameDeltaTime)
 
 void ADeathTracker::ChangeTarget()
 {
-	if (target == PosOne)
+	if (target == PosOne2)
 	{
-		target = PosTwenty;
-		SetActorLocation(target);
+		target = FVector(0, 0, 0);
+		SetActorLocation(PosTwenty2);
 		PlayDeath = false;
 		SphereMesh->SetMaterial(0, DeadMaterial);
 	}
-	else if (target == PosTwo)
-		target = PosOne;
-	else if (target == PosThree)
-		target = PosTwo;
-	else if (target == PosFour)
-		target = PosThree;
-	else if (target == PosFive)
-		target = PosFour;
-	else if (target == PosSix)
-		target = PosFive;
-	else if (target == PosSeven)
-		target = PosSix;
-	else if (target == PosEight)
-		target = PosSeven;
-	else if (target == PosNine)
-		target = PosEight;
-	else if (target == PosTen)
-		target = PosNine;
-	else if (target == PosEleven)
-		target = PosTen;
-	else if (target == PosTwelve)
-		target = PosEleven;
-	else if (target == PosThirteen)
-		target = PosTwelve;
-	else if (target == PosFourteen)
-		target = PosThirteen;
-	else if (target == PosFifteen)
-		target = PosFourteen;
-	else if (target == PosSixteen)
-		target = PosFifteen;
-	else if (target == PosSeventeen)
-		target = PosSixteen;
-	else if (target == PosEighteen)
-		target = PosSeventeen;
-	else if (target == PosNineteen)
-		target = PosEighteen;
-	else if (target == PosTwenty)
-		target = PosNineteen;
+	else if (target == PosTwo2)
+		target = PosOne2;
+	else if (target == PosThree2)
+		target = PosTwo2;
+	else if (target == PosFour2)
+		target = PosThree2;
+	else if (target == PosFive2)
+		target = PosFour2;
+	else if (target == PosSix2)
+		target = PosFive2;
+	else if (target == PosSeven2)
+		target = PosSix2;
+	else if (target == PosEight2)
+		target = PosSeven2;
+	else if (target == PosNine2)
+		target = PosEight2;
+	else if (target == PosTen2)
+		target = PosNine2;
+	else if (target == PosEleven2)
+		target = PosTen2;
+	else if (target == PosTwelve2)
+		target = PosEleven2;
+	else if (target == PosThirteen2)
+		target = PosTwelve2;
+	else if (target == PosFourteen2)
+		target = PosThirteen2;
+	else if (target == PosFifteen2)
+		target = PosFourteen2;
+	else if (target == PosSixteen2)
+		target = PosFifteen2;
+	else if (target == PosSeventeen2)
+		target = PosSixteen2;
+	else if (target == PosEighteen2)
+		target = PosSeventeen2;
+	else if (target == PosNineteen2)
+		target = PosEighteen2;
+	else if (target == PosTwenty2)
+		target = PosNineteen2;
 }

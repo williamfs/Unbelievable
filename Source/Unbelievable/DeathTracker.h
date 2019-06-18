@@ -31,6 +31,8 @@ public:
 
 	FVector PosOne, PosTwo, PosThree, PosFour, PosFive, PosSix, PosSeven, PosEight, PosNine, PosTen, PosEleven, PosTwelve, PosThirteen, PosFourteen, PosFifteen, PosSixteen, PosSeventeen, PosEighteen, PosNineteen, PosTwenty;
 
+	FVector PosOne2, PosTwo2, PosThree2, PosFour2, PosFive2, PosSix2, PosSeven2, PosEight2, PosNine2, PosTen2, PosEleven2, PosTwelve2, PosThirteen2, PosFourteen2, PosFifteen2, PosSixteen2, PosSeventeen2, PosEighteen2, PosNineteen2, PosTwenty2;
+
 	UPROPERTY(VisibleAnywhere)
 	bool IsTracking = true;
 
