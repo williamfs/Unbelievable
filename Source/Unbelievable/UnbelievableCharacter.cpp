@@ -192,9 +192,13 @@ void AUnbelievableCharacter::MoveForward(float Value)
 	{
 		if (bUseControllerRotationRoll)
 		{
-			FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.01f));
-			FirstPersonCameraComponent->bUsePawnControlRotation = true;
-			bUseControllerRotationRoll = false;
+			FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.1f));
+			if (FirstPersonCameraComponent->RelativeRotation == FRotator(0.0f, 0.0f, 0.0f))
+			{
+				FirstPersonCameraComponent->bUsePawnControlRotation = true;
+				bUseControllerRotationRoll = false;
+			}
+
 		}
 		StopSideMovement = false;
 		AddMovementInput(GetActorForwardVector(), Value);
@@ -208,6 +212,11 @@ void AUnbelievableCharacter::RunFall()
 	WallClimb2 = true;
 }
 
+void AUnbelievableCharacter::cool_down()
+{
+	WallRunCooldown = true;
+}
+
 //Movement for right and left
 void AUnbelievableCharacter::MoveRight(float Value)
 {
@@ -219,7 +228,12 @@ void AUnbelievableCharacter::MoveRight(float Value)
 
 void AUnbelievableCharacter::WallRun()
 {
-	isheld = true;
+	if (WallRunCooldown == true)
+	{
+		WallRunCooldown = false;
+		isheld = true;
+		GetWorldTimerManager().SetTimer(MemberTimerHandle3, this, &AUnbelievableCharacter::cool_down, 1.0f, false, 1.0f);
+	}
 }
 
 void AUnbelievableCharacter::WallRunEnd()
