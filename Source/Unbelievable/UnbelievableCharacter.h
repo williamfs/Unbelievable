@@ -110,6 +110,7 @@ public:
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
 	struct FTimerHandle MemberTimerHandle2;
+	struct FTimerHandle MemberTimerHandle3;
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
@@ -127,4 +128,8 @@ public:
 
 	UFUNCTION()
 		void RunFall();
+
+	bool WallRunCooldown = true;
+
+	void cool_down();
 };
