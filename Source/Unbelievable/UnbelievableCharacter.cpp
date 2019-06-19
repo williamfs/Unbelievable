@@ -427,7 +427,7 @@ void AUnbelievableCharacter::tempSaveGame()
 	FString command = FString(TEXT("HighResShot 1"));
 	if (GEditor)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("We made it to G Editor"));
+		//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("We made it to G Editor"));
 		UWorld* world = GEditor->GetEditorWorldContext().World();
 
 		if (world)
@@ -436,24 +436,24 @@ void AUnbelievableCharacter::tempSaveGame()
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Photoshoot"));
+			//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Photoshoot"));
 		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
+	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
 }
 void AUnbelievableCharacter::SaveGame()
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
 	SaveGameInstance->PlayerLocation = locationToSet;
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
-	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
+	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
 }
 void AUnbelievableCharacter::LoadGame()
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
 	SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot",0));
 	this->SetActorLocation(SaveGameInstance->PlayerLocation);
-	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Loaded Game"));
+	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Loaded Game"));
 }
 //void AUnbelievableCharacter::SingleJumpIncrement()
 //{
