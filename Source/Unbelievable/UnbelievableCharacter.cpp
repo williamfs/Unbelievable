@@ -423,7 +423,25 @@ void AUnbelievableCharacter::tempSaveGame()
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
 	SaveGameInstance->PlayerLocation = this->GetActorLocation();
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+	switch (indexOfSaveFile)
+	{
+	case 0:
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+		break;
+	case 1:
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot1"), 0);
+		break;
+	case 2:
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot2"), 0);
+		break;
+	case 3:
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot3"), 0);
+		break;
+	case 4:
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot4"), 0);
+		break;
+	}
+	//UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
 	FString command = FString(TEXT("HighResShot 1"));
 	if (GEditor)
 	{
@@ -445,13 +463,13 @@ void AUnbelievableCharacter::SaveGame()
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
 	SaveGameInstance->PlayerLocation = locationToSet;
-	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"+indexOfSaveFile), 0);
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Saved Game"));
 }
 void AUnbelievableCharacter::LoadGame()
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
-	SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot",0));
+	SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot"+indexOfSaveFile,0));
 	this->SetActorLocation(SaveGameInstance->PlayerLocation);
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Loaded Game"));
 }

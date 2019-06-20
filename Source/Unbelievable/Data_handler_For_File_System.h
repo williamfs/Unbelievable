@@ -26,5 +26,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float gameTimeForFile;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString dateForFile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString modeForFile;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int deathsForFile;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int levelForFile;
+	UFUNCTION(BluePrintCallable)
+		void LoadGame(int index);
+
 	//UPROPERTY(EditAnywhere,)
 };

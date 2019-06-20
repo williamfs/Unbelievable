@@ -132,4 +132,7 @@ public:
 	bool WallRunCooldown = true;
 
 	void cool_down();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int indexOfSaveFile;
 };

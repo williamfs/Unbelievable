@@ -31,4 +31,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		int numberOfDeathes;
+	
+	UPROPERTY(EditAnywhere)
+		int levelPlayed;
 };
