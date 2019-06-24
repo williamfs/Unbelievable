@@ -92,8 +92,8 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	//Sets key binds for camera movement
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AUnbelievableCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	/*PlayerInputComponent->BindAxis("TurnRate", this, &AUnbelievableCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);*/
 	PlayerInputComponent->BindAxis("LookUp", this, &AUnbelievableCharacter::LookUpAtRate);
 
 	//Sets key binds for dodge
@@ -192,19 +192,30 @@ void AUnbelievableCharacter::MoveForward(float Value)
 	}
 	else if (Value != 0.0f)
 	{
-		if (bUseControllerRotationRoll)
-		{
-			FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.1f));
-			if (FirstPersonCameraComponent->RelativeRotation == FRotator(0.0f, 0.0f, 0.0f))
-			{
-				FirstPersonCameraComponent->bUsePawnControlRotation = true;
-				bUseControllerRotationRoll = false;
-			}
+		//if (bUseControllerRotationRoll)
+		//{
+		//	FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0.0f, 0.0f, 0.0f).Clamp(), 0.1f));
+		//	if (FirstPersonCameraComponent->RelativeRotation == FRotator(0.0f, 0.0f, 0.0f))
+		//	{
+		//		FirstPersonCameraComponent->bUsePawnControlRotation = true;
+		//		bUseControllerRotationRoll = false;
+		//	}
 
-		}
+		//}
+		FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0, 0, 0).Clamp(), 0.1f));
+		GetWorldTimerManager().SetTimer(MemberTimerHandle4, this, &AUnbelievableCharacter::reset_camera_rotation, 1.0f, false, 0.1f);
+
 		StopSideMovement = false;
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
+}
+
+void AUnbelievableCharacter::reset_camera_rotation()
+{
+	FirstPersonCameraComponent->SetRelativeRotation(FRotator(0, FirstPersonCameraComponent->RelativeRotation.Yaw, FirstPersonCameraComponent->RelativeRotation.Pitch));
+	//Controller->SetControlRotation(FirstPersonCameraComponent->RelativeRotation);
+	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	bUseControllerRotationRoll = false;
 }
 
 
@@ -247,13 +258,14 @@ void AUnbelievableCharacter::WallRunEnd()
 //Movement for turning side to side
 void AUnbelievableCharacter::TurnAtRate(float Rate)
 {
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	//AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 //Movement for looking up and down
 void AUnbelievableCharacter::LookUpAtRate(float Rate)
 {
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	if (bUseControllerRotationRoll == false)
+		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 #pragma endregion CoreMovement
 
@@ -367,7 +379,7 @@ void AUnbelievableCharacter::Jump()
 			WallClimb = true;
 			GetCharacterMovement()->AirControl = 1;
 			GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.5f);
-			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, true);
+			LaunchCharacter((HitNormal * WalljumpHorizontalStrenght + FVector::UpVector * WalljumpUpwardsStrength) / 2, false, false);
 		}
 		else
 		{
