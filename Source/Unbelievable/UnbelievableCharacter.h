@@ -135,4 +135,22 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int indexOfSaveFile;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float float_TimeSpentInGame;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int ref_NumberofDeaths;
+	
+	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
+		void setModeForSave(int indexOfGameMode);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString ref_GameMode;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int ref_LevelBeingPlayed;
+	
+	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
+		void setLevelBeingPlayed(int indexOfLevel);
 };
