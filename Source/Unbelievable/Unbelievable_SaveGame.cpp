@@ -10,5 +10,5 @@ UUnbelievable_SaveGame::UUnbelievable_SaveGame()
 	dateOfLastPlay = FString(TEXT("9/07/2019"));
 	modeOfPlay = FString(TEXT("Exploration"));
 	numberOfDeathes = 7;
-	levelPlayed = 9;
+	levelPlayed = 1;
 }
