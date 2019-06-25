@@ -153,4 +153,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 		void setLevelBeingPlayed(int indexOfLevel);
+
+	struct FTimerHandle MemberTimerHandle4;
+	void reset_camera_rotation();
+
 };

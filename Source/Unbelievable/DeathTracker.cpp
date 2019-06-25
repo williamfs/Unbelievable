@@ -22,6 +22,7 @@ ADeathTracker::ADeathTracker(const FObjectInitializer& ObjectInitializer) : Supe
 	RootComponent = MyCollisionSphere;
 	MyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MY MESH"));
 	MyMesh->SetupAttachment(RootComponent);
+	MyMesh->SetCollisionObjectType(ECC_WorldDynamic);
 
 	IsTracking = true;
 	//Creates the Collision Detection dynamic
@@ -40,6 +41,7 @@ ADeathTracker::ADeathTracker(const FObjectInitializer& ObjectInitializer) : Supe
 		SphereMesh->SetRelativeLocation(PosTwenty);
 		SphereMesh->SetWorldScale3D(FVector(0.4f));
 		SphereMesh->SetCollisionProfileName("NoCollision");
+		SphereMesh->SetCollisionObjectType(ECC_WorldDynamic);
 	}
 
 	ConstructorHelpers::FObjectFinder<UMaterial>mat(TEXT("/Game/StarterContent/Materials/OffMaterial.OffMaterial"));
