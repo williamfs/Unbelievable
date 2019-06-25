@@ -362,12 +362,13 @@ void AUnbelievableCharacter::Jump()
 			{
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && Hit.GetActor()->GetUniqueID() != id->
-					GetUniqueID())
+					GetUniqueID() && Hit.Actor->ActorHasTag(TEXT("Wall")))
 				{
 					HitLocation = Hit.Location;
 					HitNormal = Hit.Normal;
 					MinDistance = (Hit.Location - TraceStart).Size();
 					id = Hit.GetActor();
+					i = WallJumpTraces;
 				}
 			}
 		}
