@@ -368,7 +368,6 @@ void AUnbelievableCharacter::Jump()
 					HitNormal = Hit.Normal;
 					MinDistance = (Hit.Location - TraceStart).Size();
 					id = Hit.GetActor();
-					i = WallJumpTraces;
 				}
 			}
 		}
