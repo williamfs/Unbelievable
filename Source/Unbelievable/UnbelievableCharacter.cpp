@@ -435,6 +435,23 @@ void AUnbelievableCharacter::Debug()
 	}
 }
 
+void AUnbelievableCharacter::setAllVariablesNecessaryFromBlueprint(int numberOfDeathsToAdd, int indexOfGameMode, int indexOfLevel)
+{
+	setDeathCountFromBlueprint(numberOfDeathsToAdd);
+	setModeForSave(indexOfGameMode);
+	setLevelBeingPlayed(indexOfLevel);
+}
+
+void AUnbelievableCharacter::setNumberOfDeaths(int numberOfDeathsToAdd)
+{
+	ref_NumberofDeaths += numberOfDeathsToAdd;
+}
+
+void AUnbelievableCharacter::setDeathCountFromBlueprint(int numberOfDeaths)
+{
+	ref_NumberofDeaths = numberOfDeaths;
+}
+
 void AUnbelievableCharacter::setModeForSave(int indexOfGameMode)
 {
 	switch (indexOfGameMode)

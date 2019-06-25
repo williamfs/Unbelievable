@@ -154,6 +154,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 		void setLevelBeingPlayed(int indexOfLevel);
 
+	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
+		void setNumberOfDeaths(int numberOfDeathsToAdd);
+
+	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
+		void setAllVariablesNecessaryFromBlueprint(int numberOfDeathsToAdd, int indexOfGameMode, int indexOfLevel);
+
+	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
+		void setDeathCountFromBlueprint(int numberOfDeaths);
+
+
 	struct FTimerHandle MemberTimerHandle4;
 	void reset_camera_rotation();
 

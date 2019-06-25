@@ -40,5 +40,8 @@ public:
 	UFUNCTION(BluePrintCallable)
 		void LoadGame(int index);
 
+	UPROPERTY()
+		FString filePath;
+
 	//UPROPERTY(EditAnywhere,)
 };

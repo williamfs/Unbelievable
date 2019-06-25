@@ -2,6 +2,8 @@
 
 #include "Data_handler_For_File_System.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Runtime/Core/Public/GenericPlatform/GenericPlatformFile.h"
+#include "HAL/PlatformFilemanager.h"
 #include "Unbelievable_SaveGame.h"
 #include "Engine/Engine.h"
 
@@ -30,23 +32,31 @@ void AData_handler_For_File_System::Tick(float DeltaTime)
 void AData_handler_For_File_System::LoadGame(int index)
 {
 	UUnbelievable_SaveGame* SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::CreateSaveGameObject(UUnbelievable_SaveGame::StaticClass()));
-	//SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 	switch (index)
 	{
 	case 0:
+		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot.sav");
 		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
 		break;
 	case 1:
+		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot1.sav");
 		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot1", 0));
 		break;
 	case 2:
+		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot2.sav");
 		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot2", 0));
 		break;
 	case 3:
+		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot3.sav");
 		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot3", 0));
 		break;
 	case 4:
+		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot4.sav");
 		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot4", 0));
+		//IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot4.sav");
+		
 		break;
 	}
 	//this->SetActorLocation(SaveGameInstance->PlayerLocation);
