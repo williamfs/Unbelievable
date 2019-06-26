@@ -19,8 +19,8 @@ ARotationCalculator::ARotationCalculator()
 void ARotationCalculator::BeginPlay()
 {
 	Super::BeginPlay();
-	//platformRotation = GetWorldRotation();
-	platformRotation.Pitch = 90.0f;
+	platformRotation = GetActorRotation();
+	//platformRotation.Pitch = 90.0f;
 	SetActorRotation(platformRotation);
 	rightMaxLook = platformRotation.Yaw + degreesOfVison;
 	leftMaxLook = platformRotation.Yaw - degreesOfVison;

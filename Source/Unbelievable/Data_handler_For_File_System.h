@@ -43,5 +43,20 @@ public:
 	UPROPERTY()
 		FString filePath;
 
+	UPROPERTY()
+		int seconds;
+
+	UPROPERTY()
+		int minutes;
+
+	UPROPERTY()
+		int hours;
+
+	UPROPERTY(BluePrintReadWrite)
+		FString stringOfTime;
+
+	UFUNCTION(BluePrintCallable)
+		void calculateStringForTime();
+
 	//UPROPERTY(EditAnywhere,)
 };
