@@ -579,7 +579,7 @@ void AUnbelievableCharacter::LoadGame()
 	switch (indexOfSaveFile)
 	{
 	case 0:
-		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
+		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot0", 0));
 		break;
 	case 1:
 		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot1", 0));
