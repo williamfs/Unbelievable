@@ -37,7 +37,7 @@ void AData_handler_For_File_System::LoadGame(int index)
 	{
 	case 0:
 		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot.sav");
-		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot", 0));
+		SaveGameInstance = Cast<UUnbelievable_SaveGame>(UGameplayStatics::LoadGameFromSlot("MySlot0", 0));
 		break;
 	case 1:
 		//filePath = FString("C:/Users/Brennan Kersey/Desktop/Dev Work/Unbelievable file location/Unbelievable/Saved/SaveGames/MySlot1.sav");

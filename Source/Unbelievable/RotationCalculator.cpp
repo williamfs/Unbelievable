@@ -5,6 +5,7 @@
 #include "Runtime/Engine/Classes/GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
+#include "Editor/UnrealEd/Classes/Editor/EditorEngine.h"
 #include "Runtime/Core/Public/GenericPlatform/GenericPlatformMath.h"
 // Sets default values
 ARotationCalculator::ARotationCalculator()
@@ -18,7 +19,9 @@ ARotationCalculator::ARotationCalculator()
 void ARotationCalculator::BeginPlay()
 {
 	Super::BeginPlay();
-	platformRotation = GetActorRotation();
+	//platformRotation = GetWorldRotation();
+	platformRotation.Pitch = 90.0f;
+	SetActorRotation(platformRotation);
 	rightMaxLook = platformRotation.Yaw + degreesOfVison;
 	leftMaxLook = platformRotation.Yaw - degreesOfVison;
 	player = GetWorld()->GetFirstPlayerController();
