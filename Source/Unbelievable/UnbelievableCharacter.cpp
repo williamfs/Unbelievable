@@ -555,7 +555,7 @@ void AUnbelievableCharacter::SaveGame()
 	switch (indexOfSaveFile)
 	{
 	case 0:
-		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot"), 0);
+		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot0"), 0);
 		break;
 	case 1:
 		UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("MySlot1"), 0);
