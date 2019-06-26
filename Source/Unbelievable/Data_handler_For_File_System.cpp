@@ -65,6 +65,7 @@ void AData_handler_For_File_System::LoadGame(int index)
 	modeForFile = SaveGameInstance->modeOfPlay;
 	deathsForFile = SaveGameInstance->numberOfDeathes;
 	levelForFile = SaveGameInstance->levelPlayed;
+	calculateStringForTime();
 	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, TEXT("Loaded Game For Main Menu"));
 }
 
@@ -75,10 +76,22 @@ void AData_handler_For_File_System::calculateStringForTime()
 	hours = (int)(gameTimeForFile / 3600) % 24;
 
 	stringOfTime = "";
+	if (hours < 10)
+	{
+		stringOfTime.Append("0");
+	}
 	stringOfTime.Append(FString::FromInt(hours));
 	stringOfTime.Append(":");
+	if (minutes < 10)
+	{
+		stringOfTime.Append("0");
+	}
 	stringOfTime.Append(FString::FromInt(minutes));
 	stringOfTime.Append(":");
+	if (seconds < 10)
+	{
+		stringOfTime.Append("0");
+	}
 	stringOfTime.Append(FString::FromInt(seconds));
 
 }
