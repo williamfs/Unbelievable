@@ -492,7 +492,7 @@ void AUnbelievableCharacter::tempSaveGame()
 	dateOfPlaySession.Append(FString::FromInt(day));
 	dateOfPlaySession.Append("/");
 	dateOfPlaySession.Append(FString::FromInt(dateTime.GetYear()));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The day found is: %s"), *dateOfPlaySession));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The day found is: %s"), *dateOfPlaySession));
 	SaveGameInstance->dateOfLastPlay = dateOfPlaySession;
 	SaveGameInstance->numberOfDeathes = ref_NumberofDeaths;
 	SaveGameInstance->gameTimeTotal = float_TimeSpentInGame;
@@ -546,7 +546,7 @@ void AUnbelievableCharacter::SaveGame()
 	dateOfPlaySession.Append(FString::FromInt(day));
 	dateOfPlaySession.Append("/");
 	dateOfPlaySession.Append(FString::FromInt(dateTime.GetYear()));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The day found is: %s"), *dateOfPlaySession));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The day found is: %s"), *dateOfPlaySession));
 	SaveGameInstance->dateOfLastPlay = dateOfPlaySession;
 	SaveGameInstance->numberOfDeathes = ref_NumberofDeaths;
 	SaveGameInstance->gameTimeTotal = float_TimeSpentInGame;
