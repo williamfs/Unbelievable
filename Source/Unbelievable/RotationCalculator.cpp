@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Editor/UnrealEd/Classes/Editor/EditorEngine.h"
 #include "Runtime/Core/Public/GenericPlatform/GenericPlatformMath.h"
+#include "Runtime/Engine/Classes/Components/SceneComponent.h"
 // Sets default values
 ARotationCalculator::ARotationCalculator()
 {
@@ -19,13 +20,13 @@ ARotationCalculator::ARotationCalculator()
 void ARotationCalculator::BeginPlay()
 {
 	Super::BeginPlay();
-	platformRotation = GetActorRotation();
+	//platformRotation = GetActorRotation();
 	//platformRotation.Pitch = 90.0f;
-	SetActorRotation(platformRotation);
+	//SetActorRotation(platformRotation);
 	rightMaxLook = platformRotation.Yaw + degreesOfVison;
 	leftMaxLook = platformRotation.Yaw - degreesOfVison;
 	player = GetWorld()->GetFirstPlayerController();
-	timeElapsed = 0.0f;
+	//timeElapsed = 0.0f;
 	isPlayerInRange = false;
 	//leftMaxLook
 }
@@ -36,49 +37,62 @@ void ARotationCalculator::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	//timeElapsed += DeltaTime;
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("Current value of timeElapsed: %f"),timeElapsed));
-	if (isPlayerInRange==true)
+	if (isPlayerInRange==true)   //&& timeElapsed>2.0f
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("The player y-axis value is: %f"), playerRotation.Yaw);
-		//UE_LOG(LogTemp, Warning, TEXT("The platform y-axis value is: %f"), platformRotation.Yaw);
+		//UE_LOG(LogTemp, Warning, TEXT("The player z-axis value is: %f"), playerRotation.Yaw);
+		//UE_LOG(LogTemp, Warning, TEXT("The platform z-axis value is: %f"), platformRotation.Yaw);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The player y-axis value is: %f"), playerRotation.Yaw));
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The platform y-axis value is: %f"), platformRotation.Yaw));
 		playerRotation = player->GetPawn()->GetActorRotation();
 
 		if (playerRotation.Yaw < rightMaxLook && playerRotation.Yaw != platformRotation.Yaw)
 		{
+			//UE_LOG(LogTemp, Warning, TEXT("We are supposed to be looking right and seeing it fade in"));
 			differenceBetweenRotations = playerRotation.Yaw - platformRotation.Yaw;
 			finalResultNeeded = FGenericPlatformMath::Abs(differenceBetweenRotations / degreesOfVison);
+			if (finalResultNeeded > 1.0f)
+			{
+				finalResultNeeded = 1.0f;
+			}
 			//UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
 		}
 		if (playerRotation.Yaw > leftMaxLook && playerRotation.Yaw != platformRotation.Yaw)
 		{
+			//UE_LOG(LogTemp, Warning, TEXT("We are supposed to be looking left and seeing it fade in"));
 			differenceBetweenRotations = platformRotation.Yaw - playerRotation.Yaw;
 			finalResultNeeded = FGenericPlatformMath::Abs(differenceBetweenRotations / degreesOfVison);
+			if (finalResultNeeded > 1.0f)
+			{
+				finalResultNeeded = 1.0f;
+			}
 			//UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
 		}
 
 		if (playerRotation.Yaw == platformRotation.Yaw)
 		{
+			//UE_LOG(LogTemp, Warning, TEXT("We are supposed to be looking dead at it so it should be invisible"));
 			finalResultNeeded = 0.0f;
 			//UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
 		}
 
-		if (playerRotation.Yaw > rightMaxLook)
-		{
-			finalResultNeeded = 1.0f;
-			//UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
-		}
+		//if (playerRotation.Yaw > rightMaxLook)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("We are supposed to be looking past the range of fade but be looking right"));
+		//	finalResultNeeded = 1.0f;
+		//	UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
+		//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
+		//}
 
-		if (playerRotation.Yaw < leftMaxLook)
-		{
-			finalResultNeeded = 1.0f;
-			//UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
-		}
+		//if (playerRotation.Yaw < leftMaxLook)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("We are supposed to be looking past the range of fade but be looking left"));
+		//	finalResultNeeded = 1.0f;
+		//	UE_LOG(LogTemp, Warning, TEXT("The final calculated result value is: %f"), finalResultNeeded);
+		//	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The final calculated result value is: %f"), finalResultNeeded));
+		//}
 		//timeElapsed = 0.0f;
 	}
 }

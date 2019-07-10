@@ -23,6 +23,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(BlueprintReadWrite,Category="Reference to scene component")
+	USceneComponent* currentScene;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float degreesOfVison;
 
@@ -38,7 +41,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		FRotator playerRotation;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference to platform rotation")
 		FRotator platformRotation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="The final result we need")

@@ -10,6 +10,7 @@
 #include "Unbelievable_SaveGame.h"
 #include "GameFramework/PlayerController.h"
 #include "DeathTracker.h"
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AUnbelievableCharacter::AUnbelievableCharacter()
@@ -69,6 +70,25 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 		GetCharacterMovement()->GravityScale = 1;
 
 	float_TimeSpentInGame += DeltaTime;
+
+	/*FHitResult OutHit;
+
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+	FVector End = (Start + (ForwardVector*1000.0f));
+
+	FCollisionQueryParams CollisionParams;
+	DrawDebugLine(GetWorld(),Start,End,FColor::Green,false,1,0,1);
+
+	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
+
+	if (isHit)
+	{
+		if (OutHit.bBlockingHit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
+		}
+	}*/
 }
 
 //Initialize keyboard inputs
