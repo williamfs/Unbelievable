@@ -161,7 +161,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					MinDistance = (Hit.Location - TraceStart).Size();
 					if (WallClimb)
 					{
-						GetCharacterMovement()->Velocity.Z = 50;
+						GetCharacterMovement()->Velocity.Z = arcOfWallRun;
 						if (WallClimb2) 
 						{
 							GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::RunFall, 1.0f, false, 1.0f);

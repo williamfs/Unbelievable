@@ -173,6 +173,9 @@ public:
 
 	float amountForCameraToShakeOnLand;
 
+	UPROPERTY(EditAnywhere, Category = "Wall Run Variables")
+		float arcOfWallRun=50;
+
 	struct FTimerHandle MemberTimerHandle4;
 	void reset_camera_rotation();
 
