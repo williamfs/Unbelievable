@@ -65,10 +65,15 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 		CanWallRun = false;
 
 	if (GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Falling)
+	{
 		GetCharacterMovement()->GravityScale = 1.31f;
+		timeSpentInAir += DeltaTime;
+	}
 	else
+	{
 		GetCharacterMovement()->GravityScale = 1;
-
+		timeSpentInAir = 0.0f;
+	}
 	float_TimeSpentInGame += DeltaTime;
 
 	/*FHitResult OutHit;
@@ -438,9 +443,10 @@ void AUnbelievableCharacter::Landed(const FHitResult& Hit)
 	WallClimb = true;
 	DoubleJumpCounter = 0;
 	id = this;
+	amountForCameraToShakeOnLand = rateOfShakePerSecondOfDescent * timeSpentInAir;
 	if (shouldShake)
 	{
-		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 0.75f);
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, amountForCameraToShakeOnLand);
 	}
 }
 #pragma endregion Jump

@@ -51,10 +51,10 @@ protected:
 	void BeginPlay() override;
 
 public:
-	UPROPERTY(VisibleAnywhere)
-		int healthPoints;
-	UFUNCTION()
-		void takeDamage(int damageAmount);
+	UPROPERTY(VisibleAnywhere) //------------------
+		int healthPoints;                      // |
+	UFUNCTION()                                // |---------- used for damage and will need to be hooked up to Will's stuff 
+		void takeDamage(int damageAmount);//------|
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -163,6 +163,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 		void setDeathCountFromBlueprint(int numberOfDeaths);
 
+
+	UPROPERTY(EditAnywhere,Category="Camera Shake Variables")
+		float rateOfShakePerSecondOfDescent=1.0f;
+
+	
+	UPROPERTY(VisibleAnywhere, Category = "Camera Shake Variables")
+		float timeSpentInAir;
+
+	float amountForCameraToShakeOnLand;
 
 	struct FTimerHandle MemberTimerHandle4;
 	void reset_camera_rotation();
