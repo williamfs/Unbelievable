@@ -51,10 +51,12 @@ protected:
 	void BeginPlay() override;
 
 public:
-	UPROPERTY(VisibleAnywhere) //------------------
-		int healthPoints;                      // |
-	UFUNCTION()                                // |---------- used for damage and will need to be hooked up to Will's stuff 
-		void takeDamage(int damageAmount);//------|
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Health Variables")//------------------
+		int healthPoints;                                                                 // |
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")            // |
+		int healthPointsMaximum;                                                          // |
+	UFUNCTION()                                                                           // |---------- used for damage and will need to be hooked up to Will's stuff 
+		void takeDamage(int damageAmount);//-------------------------------------------------|
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
