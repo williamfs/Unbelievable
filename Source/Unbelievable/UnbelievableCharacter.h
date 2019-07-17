@@ -52,9 +52,9 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Health Variables")//------------------
-		int healthPoints;                                                                 // |
+		float healthPoints;                                                                 // |
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")            // |
-		int healthPointsMaximum;                                                          // |
+		float healthPointsMaximum;                                                          // |
 	UFUNCTION()                                                                           // |---------- used for damage and will need to be hooked up to Will's stuff 
 		void takeDamage(int damageAmount);//-------------------------------------------------|
 	// Called every frame
@@ -78,7 +78,7 @@ public:
 	float JumpHeight;
 
 	bool CanDodge = true;
-
+	UPROPERTY(EditAnywhere, Category="Can We WallRun")
 	bool CanWallRun = false;
 	bool StopSideMovement = false;
 
@@ -107,7 +107,7 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 	void LoadGame();
 public:
-
+	float debugFloat = 0;
 	bool isheld = false;
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
@@ -140,6 +140,12 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float float_TimeSpentInGame;
+
+	UPROPERTY(VisibleAnywhere, Category="Debug Time Variables")
+		float debugTimer;
+
+	UPROPERTY(EditAnywhere, Category = "Debug Time Variables")
+		float delayToPrint;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int ref_NumberofDeaths;
@@ -180,5 +186,6 @@ public:
 
 	struct FTimerHandle MemberTimerHandle4;
 	void reset_camera_rotation();
+
 
 };
