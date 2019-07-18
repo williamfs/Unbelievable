@@ -35,7 +35,7 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WalljumpUpwardsStrength = 1500;
 	WallJumpTraceDistance = 100;
 	id = this;
-	healthPoints = 10;
+	//healthPoints = 10;
 }
 
 //Called on start
@@ -52,6 +52,8 @@ void AUnbelievableCharacter::takeDamage(int damageAmount)
 {
 	healthPoints -= damageAmount;
 }
+
+
 
 //Updates every frame
 void AUnbelievableCharacter::Tick(float DeltaTime)
@@ -98,6 +100,30 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 	}
 	float_TimeSpentInGame += DeltaTime;
 
+	/*if (healthTimer > rateOfRegeneration)
+	{
+		healthTimer = 0;
+		RegainHealth();
+	}*/
+	if (damageHasBeenTaken)
+	{
+		healthTimer += DeltaTime;
+	}
+	if (healthTimer > rateOfRegeneration)
+	{
+		shouldBeHealing = true;
+		damageHasBeenTaken = false;
+	}
+
+	if (shouldBeHealing)
+	{
+		RegainHealth();
+		if (healthPoints == healthPointsMaximum)
+		{
+			shouldBeHealing = false;
+		}
+	}
+	//healthTimer += DeltaTime;
 	/*FHitResult OutHit;
 
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
