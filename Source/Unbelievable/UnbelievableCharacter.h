@@ -27,7 +27,9 @@ class AUnbelievableCharacter : public ACharacter
 public:
 
 	AUnbelievableCharacter();
-
+	bool shouldBeHealing;
+	UPROPERTY(BlueprintReadWrite)
+		bool damageHasBeenTaken;
 	int WallJumpTraces;
 	float WallJumpTraceDistance;
 	float SingleJumpControl = 0.5f;
@@ -55,8 +57,17 @@ public:
 		float healthPoints;                                                                 // |
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")            // |
 		float healthPointsMaximum;                                                          // |
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health Variables")
+		float healthTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")
+		float amountToRegenerate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")
+		float rateOfRegeneration;
 	UFUNCTION()                                                                           // |---------- used for damage and will need to be hooked up to Will's stuff 
 		void takeDamage(int damageAmount);//-------------------------------------------------|
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Health Regeneration")
+		void RegainHealth();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
