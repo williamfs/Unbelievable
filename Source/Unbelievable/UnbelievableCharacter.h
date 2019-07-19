@@ -27,7 +27,8 @@ class AUnbelievableCharacter : public ACharacter
 public:
 
 	AUnbelievableCharacter();
-	bool shouldBeHealing;
+	UPROPERTY(BlueprintReadWrite)
+		bool shouldBeHealing;
 	UPROPERTY(BlueprintReadWrite)
 		bool damageHasBeenTaken;
 	int WallJumpTraces;

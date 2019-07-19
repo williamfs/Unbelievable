@@ -118,10 +118,11 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 	if (shouldBeHealing)
 	{
 		RegainHealth();
-		if (healthPoints == healthPointsMaximum)
+		shouldBeHealing = false;
+		/*if (healthPoints == healthPointsMaximum)
 		{
 			shouldBeHealing = false;
-		}
+		}*/
 	}
 	//healthTimer += DeltaTime;
 	/*FHitResult OutHit;
