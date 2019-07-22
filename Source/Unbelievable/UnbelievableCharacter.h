@@ -63,7 +63,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")
 		float amountToRegenerate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")
-		float rateOfRegeneration;
+		float rateOfRegeneration = 3.0f;
 	UFUNCTION()                                                                           // |---------- used for damage and will need to be hooked up to Will's stuff 
 		void takeDamage(int damageAmount);//-------------------------------------------------|
 
