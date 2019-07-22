@@ -27,7 +27,10 @@ class AUnbelievableCharacter : public ACharacter
 public:
 
 	AUnbelievableCharacter();
-
+	UPROPERTY(BlueprintReadWrite)
+		bool shouldBeHealing;
+	UPROPERTY(BlueprintReadWrite)
+		bool damageHasBeenTaken;
 	int WallJumpTraces;
 	float WallJumpTraceDistance;
 	float SingleJumpControl = 0.5f;
@@ -52,11 +55,20 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Health Variables")//------------------
-		int healthPoints;                                                                 // |
+		float healthPoints;                                                                 // |
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")            // |
-		int healthPointsMaximum;                                                          // |
+		float healthPointsMaximum;                                                          // |
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health Variables")
+		float healthTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")
+		float amountToRegenerate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Variables")
+		float rateOfRegeneration;
 	UFUNCTION()                                                                           // |---------- used for damage and will need to be hooked up to Will's stuff 
 		void takeDamage(int damageAmount);//-------------------------------------------------|
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Health Regeneration")
+		void RegainHealth();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -78,7 +90,7 @@ public:
 	float JumpHeight;
 
 	bool CanDodge = true;
-
+	UPROPERTY(EditAnywhere, Category="Can We WallRun")
 	bool CanWallRun = false;
 	bool StopSideMovement = false;
 
@@ -107,7 +119,7 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 	void LoadGame();
 public:
-
+	float debugFloat = 0;
 	bool isheld = false;
 	void DodgeCooldown();
 	struct FTimerHandle MemberTimerHandle;
@@ -140,6 +152,12 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float float_TimeSpentInGame;
+
+	UPROPERTY(VisibleAnywhere, Category="Debug Time Variables")
+		float debugTimer;
+
+	UPROPERTY(EditAnywhere, Category = "Debug Time Variables")
+		float delayToPrint;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int ref_NumberofDeaths;
@@ -180,5 +198,6 @@ public:
 
 	struct FTimerHandle MemberTimerHandle4;
 	void reset_camera_rotation();
+
 
 };

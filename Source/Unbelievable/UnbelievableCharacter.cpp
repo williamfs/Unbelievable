@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerController.h"
 #include "DeathTracker.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/KismetStringLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AUnbelievableCharacter::AUnbelievableCharacter()
@@ -34,7 +35,7 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WalljumpUpwardsStrength = 1500;
 	WallJumpTraceDistance = 100;
 	id = this;
-	healthPoints = 10;
+	//healthPoints = 10;
 }
 
 //Called on start
@@ -52,18 +53,41 @@ void AUnbelievableCharacter::takeDamage(int damageAmount)
 	healthPoints -= damageAmount;
 }
 
+
+
 //Updates every frame
 void AUnbelievableCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	Debug();
-
+	debugTimer += DeltaTime;
 	if (isheld)
+	{
 		CanWallRun = true;
-	else
-		CanWallRun = false;
+		if (debugTimer > delayToPrint) // Method fragment to check for how Jon is evaluating the Wall Run, specifically checkking to see if shift is held
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("CanWallRun value is: %s"), CanWallRun ? TEXT("true") : TEXT("false")));
+			debugTimer = 0.0f;
 
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("WallClimb value is: %s"), WallClimb ? TEXT("true") : TEXT("false")));	
+
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("WallClimb2 value is: %s"), WallClimb2 ? TEXT("true") : TEXT("false")));
+		}
+	}
+	else
+	{
+		CanWallRun = false;
+		if (debugTimer > delayToPrint)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("CanWallRun value is: %s"), CanWallRun ? TEXT("true") : TEXT("false")));
+			debugTimer = 0.0f;
+
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("WallClimb value is: %s"), WallClimb ? TEXT("true") : TEXT("false")));
+
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("WallClimb2 value is: %s"), WallClimb2 ? TEXT("true") : TEXT("false")));
+		}
+	}
 	if (GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Falling)
 	{
 		GetCharacterMovement()->GravityScale = 1.31f;
@@ -76,6 +100,31 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 	}
 	float_TimeSpentInGame += DeltaTime;
 
+	/*if (healthTimer > rateOfRegeneration)
+	{
+		healthTimer = 0;
+		RegainHealth();
+	}*/
+	if (damageHasBeenTaken)
+	{
+		healthTimer += DeltaTime;
+	}
+	if (healthTimer > rateOfRegeneration)
+	{
+		shouldBeHealing = true;
+		damageHasBeenTaken = false;
+	}
+
+	if (shouldBeHealing)
+	{
+		RegainHealth();
+		shouldBeHealing = false;
+		/*if (healthPoints == healthPointsMaximum)
+		{
+			shouldBeHealing = false;
+		}*/
+	}
+	//healthTimer += DeltaTime;
 	/*FHitResult OutHit;
 
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
@@ -133,10 +182,23 @@ void AUnbelievableCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 //Movement for forward and backwards
 void AUnbelievableCharacter::MoveForward(float Value)
 {
-	if (CanWallRun && Value != 0.0f && !GetCharacterMovement()->IsMovingOnGround() && DisableSpecialMovement)
+	FVector TraceStart = GetActorLocation();
+	float traceDistance = 100;
+	float MinDistance = 9999999;
+	FVector HitLocation = FVector::ZeroVector;
+	FVector TraceRight = GetActorRightVector();
+	FVector RightEnd = TraceStart + TraceRight * traceDistance;
+	FVector TraceLeft = -GetActorRightVector();
+	FVector LeftEnd = TraceStart + TraceLeft * traceDistance;
+	static FName TraceTag = FName(TEXT("WeaponTrace"));
+	FCollisionQueryParams TraceParams(TraceTag, true, Instigator);
+	TraceParams.bTraceAsyncScene = true;
+	TraceParams.bReturnPhysicalMaterial = true;
+	FHitResult Hit(ForceInit);
+	if (CanWallRun && Value != 0.0f && !GetCharacterMovement()->IsMovingOnGround() && DisableSpecialMovement) // Disable specual movement is to disable movement for entering the vignette
 	{
 		// Do a ring of traces
-		FVector TraceStart = GetActorLocation();
+		/*FVector TraceStart = GetActorLocation();
 		float traceDistance = 100;
 		float MinDistance = 9999999;
 		FVector HitLocation = FVector::ZeroVector;
@@ -148,12 +210,15 @@ void AUnbelievableCharacter::MoveForward(float Value)
 		FCollisionQueryParams TraceParams(TraceTag, true, Instigator);
 		TraceParams.bTraceAsyncScene = true;
 		TraceParams.bReturnPhysicalMaterial = true;
-		FHitResult Hit(ForceInit);
-		for (int i = 0; i < WallJumpTraces; i++)
-		{
+		FHitResult Hit(ForceInit);*/
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The value of Value For Move Forward is: %f"), Value));
+		//for (int i = 0; i < WallJumpTraces; i++)
+		//{
 			//Checks if the player hits a wall
 			if (GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, RightEnd, ECC_WorldStatic, TraceParams))
 			{
+				debugFloat += 1;
+				UE_LOG(LogTemp, Warning, TEXT("The value of debug float is: %f"), debugFloat); 
 				//Checks if the hit wall was just jumped from and if not it applies the values to variable needed for the jump
 				if ((Hit.Location - TraceStart).Size() < MinDistance && !Hit.Actor->GetName().Contains("DeathTracker"))
 				{
@@ -161,9 +226,11 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					MinDistance = (Hit.Location - TraceStart).Size();
 					if (WallClimb)
 					{
+						//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The value of Value For Move Forward is: %f"), Value));
 						GetCharacterMovement()->Velocity.Z = arcOfWallRun;
 						if (WallClimb2) 
 						{
+							//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString::Printf(TEXT("The value of Value For Move Forward is: %f"), Value));
 							GetWorldTimerManager().SetTimer(MemberTimerHandle2, this, &AUnbelievableCharacter::RunFall, 1.0f, false, 1.0f);
 							WallClimb2 = false;
 						}
@@ -181,6 +248,7 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					StopSideMovement = true;
 					HitLocation = FVector::ZeroVector;
 					MinDistance = 9999999;
+					//FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0, 0, 0).Clamp(), 0.1f));
 				}
 			}
 			else if(GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, LeftEnd, ECC_WorldStatic, TraceParams))
@@ -213,9 +281,14 @@ void AUnbelievableCharacter::MoveForward(float Value)
 					MinDistance = 9999999;
 				}
 			}
-		}
+		//}
 	}
-	else if (Value != 0.0f)
+	else if (!WallClimb && !GetCharacterMovement()->IsMovingOnGround() && Value==0.0) //if you land after/while  holding shift
+	{
+		FirstPersonCameraComponent->SetRelativeRotation(FMath::Lerp(FirstPersonCameraComponent->RelativeRotation, FRotator(0, 0, 0).Clamp(), 0.1f));
+		GetWorldTimerManager().SetTimer(MemberTimerHandle4, this, &AUnbelievableCharacter::reset_camera_rotation, 1.0f, false, 0.1f);
+	}
+	else if(Value != 0.0f)//else if (Value != 0.0f) // 
 	{
 		//if (bUseControllerRotationRoll)
 		//{
@@ -271,7 +344,7 @@ void AUnbelievableCharacter::WallRun()
 	{
 		WallRunCooldown = false;
 		isheld = true;
-		GetWorldTimerManager().SetTimer(MemberTimerHandle3, this, &AUnbelievableCharacter::cool_down, 1.0f, false, 1.0f);
+		GetWorldTimerManager().SetTimer(MemberTimerHandle3, this, &AUnbelievableCharacter::cool_down, 1.0f, false, 1.0f); // Equivalent of Coroutine which is a program sequence timer
 	}
 }
 
