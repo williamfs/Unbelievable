@@ -376,6 +376,10 @@ void AUnbelievableCharacter::DodgeLeft()
 	if (CanDodge == true && DisableSpecialMovement)
 	{
 		CanDodge = false;
+		TutJustDodged = true;
+
+		//Tutorial Dodge Timer
+		GetWorldTimerManager().SetTimer(MemberTimerHandleDodge, this, &AUnbelievableCharacter::TutDodgeCheck, 0.2f, false, 0.2f);
 
 		//Lowers friction for smoother movement
 		GetCharacterMovement()->GroundFriction = 0;
@@ -399,6 +403,10 @@ void AUnbelievableCharacter::DodgeRight()
 	if (CanDodge == true && DisableSpecialMovement)
 	{
 		CanDodge = false;
+		TutJustDodged = true;
+
+		//TutorialDodgeTimer
+		GetWorldTimerManager().SetTimer(MemberTimerHandleDodge, this, &AUnbelievableCharacter::TutDodgeCheck, 0.2f, false, 0.2f);
 
 		//Lowers friction for smoother movement
 		GetCharacterMovement()->GroundFriction = 0;
@@ -425,6 +433,10 @@ void AUnbelievableCharacter::EndDodge()
 void AUnbelievableCharacter::DodgeCooldown()
 {
 	CanDodge = true;
+}
+void AUnbelievableCharacter::TutDodgeCheck()
+{
+	TutJustDodged = false;
 }
 #pragma endregion Dodge
 

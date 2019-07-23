@@ -88,11 +88,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpHeight;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CanDodge = true;
 	UPROPERTY(EditAnywhere, Category="Can We WallRun")
 	bool CanWallRun = false;
 	bool StopSideMovement = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool TutJustDodged = false;
 
 protected:
 
@@ -114,7 +116,7 @@ protected:
 	void Debug();
 private:
 	void tempSaveGame();
-	UFUNCTION(BlueprintCallable,Category="Save System Functionality")
+	UFUNCTION(BlueprintCallable, Category="Save System Functionality")
 	void SaveGame();
 	UFUNCTION(BlueprintCallable, Category = "Save System Functionality")
 	void LoadGame();
@@ -122,9 +124,13 @@ public:
 	float debugFloat = 0;
 	bool isheld = false;
 	void DodgeCooldown();
+	UFUNCTION(BlueprintCallable, Category="Yeet")
+	void TutDodgeCheck();
+
 	struct FTimerHandle MemberTimerHandle;
 	struct FTimerHandle MemberTimerHandle2;
 	struct FTimerHandle MemberTimerHandle3;
+	struct FTimerHandle MemberTimerHandleDodge;
 
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
