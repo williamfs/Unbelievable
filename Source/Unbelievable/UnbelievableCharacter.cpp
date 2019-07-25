@@ -35,7 +35,7 @@ AUnbelievableCharacter::AUnbelievableCharacter()
 	WalljumpUpwardsStrength = 1500;
 	WallJumpTraceDistance = 100;
 	id = this;
-	healthPoints = 10;
+	//healthPoints = 10;
 }
 
 //Called on start
@@ -52,6 +52,8 @@ void AUnbelievableCharacter::takeDamage(int damageAmount)
 {
 	healthPoints -= damageAmount;
 }
+
+
 
 //Updates every frame
 void AUnbelievableCharacter::Tick(float DeltaTime)
@@ -98,6 +100,31 @@ void AUnbelievableCharacter::Tick(float DeltaTime)
 	}
 	float_TimeSpentInGame += DeltaTime;
 
+	/*if (healthTimer > rateOfRegeneration)
+	{
+		healthTimer = 0;
+		RegainHealth();
+	}*/
+	if (damageHasBeenTaken)
+	{
+		healthTimer += DeltaTime;
+	}
+	if (healthTimer > rateOfRegeneration)
+	{
+		shouldBeHealing = true;
+		damageHasBeenTaken = false;
+	}
+
+	if (shouldBeHealing)
+	{
+		RegainHealth();
+		shouldBeHealing = false;
+		/*if (healthPoints == healthPointsMaximum)
+		{
+			shouldBeHealing = false;
+		}*/
+	}
+	//healthTimer += DeltaTime;
 	/*FHitResult OutHit;
 
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
@@ -349,6 +376,10 @@ void AUnbelievableCharacter::DodgeLeft()
 	if (CanDodge == true && DisableSpecialMovement)
 	{
 		CanDodge = false;
+		TutJustDodged = true;
+
+		//Tutorial Dodge Timer
+		GetWorldTimerManager().SetTimer(MemberTimerHandleDodge, this, &AUnbelievableCharacter::TutDodgeCheck, 0.2f, false, 0.2f);
 
 		//Lowers friction for smoother movement
 		GetCharacterMovement()->GroundFriction = 0;
@@ -372,6 +403,10 @@ void AUnbelievableCharacter::DodgeRight()
 	if (CanDodge == true && DisableSpecialMovement)
 	{
 		CanDodge = false;
+		TutJustDodged = true;
+
+		//TutorialDodgeTimer
+		GetWorldTimerManager().SetTimer(MemberTimerHandleDodge, this, &AUnbelievableCharacter::TutDodgeCheck, 0.2f, false, 0.2f);
 
 		//Lowers friction for smoother movement
 		GetCharacterMovement()->GroundFriction = 0;
@@ -398,6 +433,10 @@ void AUnbelievableCharacter::EndDodge()
 void AUnbelievableCharacter::DodgeCooldown()
 {
 	CanDodge = true;
+}
+void AUnbelievableCharacter::TutDodgeCheck()
+{
+	TutJustDodged = false;
 }
 #pragma endregion Dodge
 
